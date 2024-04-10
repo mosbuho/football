@@ -84,7 +84,7 @@ public class Client {
 						break;
 					}
 				} else {
-					System.out.println("1. 팀 목록 2. 선수 목록 3. 순위 4. 이적 시장 5. 내 팀 관리 6. 플레이 7. 종료");
+					System.out.println("1. 팀 목록 2. 선수 목록 3. 순위 4. 이적 시장 5. 내 팀 관리 6. 레디 7. 플레이 8. 종료");
 					menu = Integer.parseInt(input.readLine());
 					switch (menu) {
 					case 1:
@@ -118,9 +118,12 @@ public class Client {
 						}
 						break;
 					case 6:
-						menuChoice = "gamePlay";
+						menuChoice = "ready";
 						break;
 					case 7:
+						menuChoice = "gamePlay";
+						break;
+					case 8:
 						menuChoice = "exit";
 						break;
 					default:
@@ -196,8 +199,11 @@ public class Client {
 				case "sellPlayer":
 					sellPlayer(pw, input, br, sessionId);
 					break;
+				case "ready":
+					ready(pw, br, sessionId);
+					break;
 				case "gamePlay":
-					gamePlay(pw, br, sessionId);
+					// 게임 플레이
 					break;
 				case "exit":
 					exit(pw, sessionId);
@@ -211,15 +217,13 @@ public class Client {
 		}
 	}
 
-	public static void gamePlay(PrintWriter pw, BufferedReader br, String sessionId) throws IOException {
-		pw.println("gamePlay");
+	public static void ready(PrintWriter pw, BufferedReader br, String sessionId) throws IOException {
+		pw.println("ready");
 		pw.println(sessionId);
+
 		String response = br.readLine();
 		if (response.equals("pass")) {
-			System.out.println("다른 클라이언트 접속 대기중");
-			if (response.equals("gameStart")) {
-				// 게임 시작
-			}
+			System.out.println("준비 완료");
 		} else {
 			System.out.println("대기열 꽉 참");
 		}

@@ -12,7 +12,6 @@ import java.util.List;
 
 public class Server {
 	public static final int PORT = 7777;
-	public static final int MAX_PLAYERS = 2;
 	public static List<User> gameUserList = new ArrayList<>();
 
 	public static void main(String[] args) {
@@ -96,8 +95,8 @@ public class Server {
 				case "sellPlayer":
 					sellPlayer(br, pw, cs);
 					break;
-				case "gamePlay":
-					gamePlay(br, pw, cs);
+				case "ready":
+					ready(br, pw, cs);
 					break;
 				case "exit":
 					exit(br, pw, cs);
@@ -116,24 +115,25 @@ public class Server {
 		}
 	}
 
-	public static void gamePlay(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
+	public static void ready(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
 		String sessionId = br.readLine();
-		if (gameUserList.size() >= MAX_PLAYERS) {
-			pw.println("fail");
-			return;
-		}
-
-		User user = UserManager.getUserBySessionId(sessionId);
-		if (user != null) {
-			pw.println("pass");
-			gameUserList.add(user);
-		} else {
-			pw.println("fail");
-			return;
-		}
-
-		if (gameUserList.size() == MAX_PLAYERS) {
-			pw.println("gameStart");
+		synchronized (gameUserList) {
+			if (gameUserList.size() >= 2) {
+				pw.println("fail");
+				return;
+			}
+			User user = UserManager.getUserBySessionId(sessionId);
+			if (user != null) {
+				if (user.getPlayers().size() < 11) {
+					pw.println("fail");
+				} else {
+					pw.println("pass");
+					gameUserList.add(user);
+					System.out.println(cs + "게임 대기열 입장");
+				}
+			} else {
+				pw.println("fail");
+			}
 		}
 	}
 
