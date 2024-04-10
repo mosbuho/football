@@ -204,7 +204,7 @@ public class Client {
 					ready(pw, br, sessionId);
 					break;
 				case "gamePlay":
-					// 게임 플레이
+					gamePlay(pw, br, sessionId);
 					break;
 				case "exit":
 					exit(pw, sessionId);
@@ -215,6 +215,22 @@ public class Client {
 			System.out.println("소켓 에러 " + e.getMessage());
 		} catch (IOException e) {
 			System.out.println("소켓 에러 " + e.getMessage());
+		}
+	}
+
+	public static void gamePlay(PrintWriter pw, BufferedReader br, String sessionId) throws IOException {
+		pw.println("gamePlay");
+		String response = br.readLine();
+		if (response.equals("fail")) {
+			System.out.println("대기열 2명 안됨");
+			return;
+		} else {
+			pw.println(sessionId);
+			if (br.readLine().equals("pass")) {
+				System.out.println("게임 시작");
+			} else {
+				System.out.println("게임 실패");
+			}
 		}
 	}
 

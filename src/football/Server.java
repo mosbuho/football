@@ -101,6 +101,9 @@ public class Server {
 				case "ready":
 					ready(br, pw, cs);
 					break;
+				case "gamePlay":
+					gamePlay(br, pw);
+					break;
 				case "exit":
 					exit(br, pw, cs);
 					return;
@@ -118,6 +121,27 @@ public class Server {
 		}
 	}
 
+	public static void gamePlay(BufferedReader br, PrintWriter pw) throws IOException {
+		if (gameUserList.size() != 2) {
+			pw.println("fail");
+			return;
+		} else {
+			pw.println("pass");
+			String sessionId = br.readLine();
+			User user = UserManager.getUserBySessionId(sessionId);
+			if (user != null) {
+				if (gameUserList.size() == 2 && user.getPlayers().size() == 11) {
+					pw.println("pass");
+					// 게임 시작
+				} else {
+					pw.println("fail");
+				}
+			} else {
+				pw.println("fail");
+			}
+		}
+	}
+
 	public static void ready(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
 		String sessionId = br.readLine();
 		synchronized (gameUserList) {
@@ -127,7 +151,6 @@ public class Server {
 			}
 			User user = UserManager.getUserBySessionId(sessionId);
 			if (user != null) {
-				System.out.println(user.getPlayers().size());
 				if (user.getPlayers().size() < 11) {
 					pw.println("fail");
 				} else {
