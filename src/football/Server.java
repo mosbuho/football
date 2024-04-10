@@ -65,6 +65,9 @@ public class Server {
 				case "userInfo":
 					userInfo(oos);
 					break;
+				case "myInfo":
+					myInfo(br, pw, oos);
+					break;
 				case "adminUserInfo":
 					adminUserInfo(br, pw, cs, oos);
 					break;
@@ -124,6 +127,7 @@ public class Server {
 			}
 			User user = UserManager.getUserBySessionId(sessionId);
 			if (user != null) {
+				System.out.println(user.getPlayers().size());
 				if (user.getPlayers().size() < 11) {
 					pw.println("fail");
 				} else {
@@ -190,6 +194,20 @@ public class Server {
 		}
 	}
 
+	// 내 팀 관리
+	public static void myInfo(BufferedReader br, PrintWriter pw, ObjectOutputStream oos) throws IOException {
+		String sessionId = br.readLine();
+		User user = UserManager.getUserBySessionId(sessionId);
+		if (user != null) {
+			pw.println("pass");
+			oos.writeObject(user);
+			oos.flush();
+		} else {
+			pw.println("fail");
+		}
+	}
+
+	// rank
 	public static void userInfo(ObjectOutputStream oos) throws IOException {
 		List<User> userList = UserManager.loadUserList();
 		oos.writeObject(userList);

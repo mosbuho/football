@@ -100,6 +100,7 @@ public class Client {
 						menuChoice = "transMarket";
 						break;
 					case 5:
+						myInfo(pw, br, sessionId, ois);
 						System.out.println("1. 방출 2. 판매 3. 영입");
 						int inMenu = Integer.parseInt(input.readLine());
 						switch (inMenu) {
@@ -214,6 +215,23 @@ public class Client {
 			System.out.println("소켓 에러 " + e.getMessage());
 		} catch (IOException e) {
 			System.out.println("소켓 에러 " + e.getMessage());
+		}
+	}
+
+	public static void myInfo(PrintWriter pw, BufferedReader br, String sessionId, ObjectInputStream ois)
+			throws IOException {
+		pw.println("myInfo");
+		pw.println(sessionId);
+		String response = br.readLine();
+		if (response.equals("pass")) {
+			try {
+				User user = (User) ois.readObject();
+				System.out.println(user.admintoString());
+			} catch (ClassNotFoundException e) {
+				System.out.println("내 정보 수신 오류 : " + e.getMessage());
+			}
+		} else {
+			System.out.println("에러");
 		}
 	}
 
