@@ -12,7 +12,7 @@ import java.util.List;
 public class Client {
 	public static final int PORT = 7777;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		try (Socket cs = new Socket("localhost", PORT)) {
 			String sessionId = null;
 			boolean isAdmin = false;
@@ -204,7 +204,7 @@ public class Client {
 					ready(pw, br, sessionId);
 					break;
 				case "gamePlay":
-					gamePlay(pw, br, sessionId);
+					gamePlay(pw, br, input, sessionId);
 					break;
 				case "exit":
 					exit(pw, sessionId);
@@ -218,19 +218,24 @@ public class Client {
 		}
 	}
 
-	public static void gamePlay(PrintWriter pw, BufferedReader br, String sessionId) throws IOException {
+	public static void gamePlay(PrintWriter pw, BufferedReader br, BufferedReader input, String sessionId)
+			throws IOException, InterruptedException {
 		pw.println("gamePlay");
-		String response = br.readLine();
-		if (response.equals("fail")) {
-			System.out.println("대기열 2명 안됨");
-			return;
-		} else {
-			pw.println(sessionId);
-			if (br.readLine().equals("pass")) {
-				System.out.println("게임 시작");
-			} else {
-				System.out.println("게임 실패");
+		pw.println(sessionId);
+
+		System.out.println(br.readLine());
+		String ABChoice = input.readLine();
+		pw.println(ABChoice);
+
+		while (true) {
+			String response = br.readLine();
+			System.out.println(response);
+
+			if (response.equals("shoot 입력")) {
+				String action = input.readLine();
+				pw.println(action);
 			}
+			Thread.sleep(1500);
 		}
 	}
 

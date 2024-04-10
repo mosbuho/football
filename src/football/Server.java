@@ -8,11 +8,27 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Server {
 	public static final int PORT = 7777;
-	public static List<User> gameUserList = new ArrayList<>();
+	private static Random random = new Random();
+	public static Map<Socket, User> gameUserList = new HashMap<>();
+	public static List<Socket> gameUserSocketList = new ArrayList<>();
+	private static ConcurrentHashMap<String, Integer> scores = new ConcurrentHashMap<>();
+	private static AtomicBoolean turnA = new AtomicBoolean(random.nextBoolean());
+	private static Set<PrintWriter> writers = Collections.synchronizedSet(new HashSet<>());
+	public static final int MAX_GAME_PLAYER = 2;
+	public static int round = 0;
+	public static final int MAX_ROUNDS = 1;
 
 	public static void main(String[] args) {
 		try {
@@ -31,6 +47,8 @@ public class Server {
 						csHandler(cs);
 					} catch (IOException e) {
 						System.out.println("쓰레드 핸들러 에러" + e.getMessage());
+					} catch (InterruptedException e) {
+						System.out.println("쓰레드 핸들러 에러" + e.getMessage());
 					}
 				}).start();
 			}
@@ -39,7 +57,7 @@ public class Server {
 		}
 	}
 
-	public static void csHandler(Socket cs) throws IOException {
+	public static void csHandler(Socket cs) throws IOException, InterruptedException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(cs.getInputStream()));
 		PrintWriter pw = new PrintWriter(cs.getOutputStream(), true);
 		ObjectOutputStream oos = new ObjectOutputStream(cs.getOutputStream());
@@ -121,31 +139,53 @@ public class Server {
 		}
 	}
 
-	public static void gamePlay(BufferedReader br, PrintWriter pw) throws IOException {
-		if (gameUserList.size() != 2) {
-			pw.println("fail");
-			return;
-		} else {
-			pw.println("pass");
-			String sessionId = br.readLine();
-			User user = UserManager.getUserBySessionId(sessionId);
-			if (user != null) {
-				if (gameUserList.size() == 2 && user.getPlayers().size() == 11) {
-					pw.println("pass");
-					// 게임 시작
-				} else {
-					pw.println("fail");
+	public static void gamePlay(BufferedReader br, PrintWriter pw) throws IOException, InterruptedException {
+		String sessionid = br.readLine();
+		User user = UserManager.getUserBySessionId(sessionid);
+		writers.add(pw);
+
+		pw.println("A / B 선택");
+		String AB = br.readLine();
+		boolean attPlayer = AB.contains("A");
+
+		while (round < MAX_ROUNDS) {
+			if ((attPlayer && turnA.get()) || (!attPlayer && !turnA.get())) {
+				pw.println("shoot 입력");
+				String action = br.readLine();
+
+				if (action.equals("shoot")) {
+					pw.println("슛 성공 / 실패");
+					scores.put(AB, 0);
+					broadcastMessage(AB + " 슛 성공 / 실패");
+				}
+				turnA.set(!turnA.get());
+				if (scores.size() == 2) {
+					String winner = scores.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey();
+					broadcastMessage(winner + " 승리");
+					scores.clear();
+					gameUserList.clear();
+					gameUserSocketList.clear();
+					writers.clear();
 				}
 			} else {
-				pw.println("fail");
+				pw.println("수비 턴");
 			}
+			Thread.sleep(6000);
+		}
+		round = 0;
+
+	}
+
+	public static void broadcastMessage(String msg) {
+		for (PrintWriter writer : writers) {
+			writer.println(msg);
 		}
 	}
 
 	public static void ready(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
 		String sessionId = br.readLine();
 		synchronized (gameUserList) {
-			if (gameUserList.size() >= 2) {
+			if (gameUserList.size() >= MAX_GAME_PLAYER) {
 				pw.println("fail");
 				return;
 			}
@@ -155,7 +195,8 @@ public class Server {
 					pw.println("fail");
 				} else {
 					pw.println("pass");
-					gameUserList.add(user);
+					gameUserList.put(cs, user);
+					gameUserSocketList.add(cs);
 					System.out.println(cs + "게임 대기열 입장");
 				}
 			} else {
