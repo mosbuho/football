@@ -64,6 +64,9 @@ public class Server {
 				case "userInfo":
 					userInfo(oos);
 					break;
+				case "adminUserInfo":
+					adminUserInfo(br, pw, cs, oos);
+					break;
 				case "createTeam":
 					createTeam(br, pw, cs);
 					break;
@@ -145,6 +148,20 @@ public class Server {
 		List<Player> player = PlayerManager.loadPlayerList();
 		oos.writeObject(player);
 		oos.flush();
+	}
+
+	public static void adminUserInfo(BufferedReader br, PrintWriter pw, Socket cs, ObjectOutputStream oos)
+			throws IOException {
+		String sessionId = br.readLine();
+		boolean isAdmin = UserManager.adminCheck(sessionId);
+		if (isAdmin) {
+			pw.println("pass");
+			List<User> userList = UserManager.loadUserList();
+			oos.writeObject(userList);
+			oos.flush();
+		} else {
+			pw.println("fail");
+		}
 	}
 
 	public static void userInfo(ObjectOutputStream oos) throws IOException {
@@ -265,14 +282,6 @@ public class Server {
 		pw.println("pass");
 	}
 
-	public static void exit(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
-		System.out.println(cs + " 종료");
-		String sessionId = br.readLine();
-		if (sessionId != null && !sessionId.isEmpty()) {
-			UserManager.logout(sessionId);
-		}
-	}
-
 	public static void userDeletePlayer(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
 		System.out.println(cs + " 방출");
 		String sessionId = br.readLine();
@@ -382,6 +391,14 @@ public class Server {
 		}
 		if (!userFound || !playerFound) {
 			pw.println("fail");
+		}
+	}
+
+	public static void exit(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
+		System.out.println(cs + " 종료");
+		String sessionId = br.readLine();
+		if (sessionId != null && !sessionId.isEmpty()) {
+			UserManager.logout(sessionId);
 		}
 	}
 }

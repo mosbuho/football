@@ -22,7 +22,7 @@ public class User implements Serializable {
 		this.id = null;
 		this.pw = null;
 		this.sessionId = null;
-		this.isAdmin = true;
+		this.isAdmin = false;
 		this.teamName = null;
 		this.balance = 10000;
 		this.players = new ArrayList<>();
@@ -37,7 +37,7 @@ public class User implements Serializable {
 		this.id = id;
 		this.pw = pw;
 		this.sessionId = null;
-		this.isAdmin = true;
+		this.isAdmin = false;
 		this.teamName = teamName;
 		this.balance = 10000;
 		this.players = players;
@@ -148,6 +148,11 @@ public class User implements Serializable {
 		this.positionCount = positionCount;
 	}
 
+	public String admintoString() {
+		return "User [id=" + id + ", pw=" + pw + ", sessionId=" + sessionId + ", isAdmin=" + isAdmin + ", teamName="
+				+ teamName + ", balance=" + balance + "\n" + players + ", positionCount=" + positionCount + "]";
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -165,12 +170,7 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", pw=" + pw + ", sessionId=" + sessionId + ", isAdmin=" + isAdmin + ", teamName="
-				+ teamName + ", balance=" + balance + "\n" + players + ", positionCount=" + positionCount + "]";
+		return "아이디 : " + id + ", 팀 : " + teamName + "\n" + players;
 	}
 
-	/*
-	 * @Override public String toString() { return "아이디 : " + id + ", 팀 : " +
-	 * teamName + "\n" + players; }
-	 */
 }

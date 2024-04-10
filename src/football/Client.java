@@ -56,7 +56,7 @@ public class Client {
 						menuChoice = "playerInfo";
 						break;
 					case 3:
-						menuChoice = "userInfo";
+						menuChoice = "adminUserInfo";
 						break;
 					case 4:
 						menuChoice = "createTeam";
@@ -118,7 +118,7 @@ public class Client {
 						}
 						break;
 					case 6:
-						menuChoice = "play";
+						menuChoice = "gamePlay";
 						break;
 					case 7:
 						menuChoice = "exit";
@@ -164,6 +164,9 @@ public class Client {
 					pw.println("userInfo");
 					userInfo(ois);
 					break;
+				case "adminUserInfo":
+					adminUserInfo(pw, br, sessionId, ois);
+					break;
 				case "createTeam":
 					createTeam(pw, input, br, sessionId);
 					break;
@@ -192,6 +195,9 @@ public class Client {
 					break;
 				case "sellPlayer":
 					sellPlayer(pw, input, br, sessionId);
+					break;
+				case "gamePlay":
+
 					break;
 				case "exit":
 					exit(pw, sessionId);
@@ -288,6 +294,26 @@ public class Client {
 		} catch (ClassNotFoundException | IOException e) {
 			System.out.println("유저 목록 수신 오류 : " + e.getMessage());
 		}
+	}
+
+	public static void adminUserInfo(PrintWriter pw, BufferedReader br, String sessionId, ObjectInputStream ois)
+			throws IOException {
+		pw.println("adminUserInfo");
+		pw.println(sessionId);
+		String response = br.readLine();
+		if (response.equals("pass")) {
+			try {
+				List<User> userList = (List<User>) ois.readObject();
+				for (User user : userList) {
+					System.out.println(user.admintoString());
+				}
+			} catch (ClassNotFoundException | IOException e) {
+				System.out.println("유저 목록 수신 오류 : " + e.getMessage());
+			}
+		} else {
+			System.out.println("권한 없음");
+		}
+
 	}
 
 	public static void createTeam(PrintWriter pw, BufferedReader input, BufferedReader br, String sessionId)
