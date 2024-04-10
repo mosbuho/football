@@ -12,6 +12,8 @@ import java.util.List;
 
 public class Server {
 	public static final int PORT = 7777;
+	public static final int MAX_PLAYERS = 2;
+	public static List<User> gameUserList = new ArrayList<>();
 
 	public static void main(String[] args) {
 		try {
@@ -94,6 +96,9 @@ public class Server {
 				case "sellPlayer":
 					sellPlayer(br, pw, cs);
 					break;
+				case "gamePlay":
+					gamePlay(br, pw, cs);
+					break;
 				case "exit":
 					exit(br, pw, cs);
 					return;
@@ -108,6 +113,27 @@ public class Server {
 				oos.flush();
 				oos.close();
 			}
+		}
+	}
+
+	public static void gamePlay(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
+		String sessionId = br.readLine();
+		if (gameUserList.size() >= MAX_PLAYERS) {
+			pw.println("fail");
+			return;
+		}
+
+		User user = UserManager.getUserBySessionId(sessionId);
+		if (user != null) {
+			pw.println("pass");
+			gameUserList.add(user);
+		} else {
+			pw.println("fail");
+			return;
+		}
+
+		if (gameUserList.size() == MAX_PLAYERS) {
+			pw.println("gameStart");
 		}
 	}
 

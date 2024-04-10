@@ -13,6 +13,16 @@ import java.util.UUID;
 public class UserManager {
 	private static final String USERFILE_PATH = "user.dba";
 
+	public static synchronized User getUserBySessionId(String sessionId) {
+		List<User> userList = loadUserList();
+		for (User user : userList) {
+			if (user.getSessionId() != null && user.getSessionId().equals(sessionId)) {
+				return user;
+			}
+		}
+		return null;
+	}
+
 	public static synchronized boolean register(String userId, String userPw, String teamName) {
 		List<User> userList = loadUserList();
 		for (User user : userList) {

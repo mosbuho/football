@@ -197,7 +197,7 @@ public class Client {
 					sellPlayer(pw, input, br, sessionId);
 					break;
 				case "gamePlay":
-
+					gamePlay(pw, br, sessionId);
 					break;
 				case "exit":
 					exit(pw, sessionId);
@@ -208,6 +208,20 @@ public class Client {
 			System.out.println("소켓 에러 " + e.getMessage());
 		} catch (IOException e) {
 			System.out.println("소켓 에러 " + e.getMessage());
+		}
+	}
+
+	public static void gamePlay(PrintWriter pw, BufferedReader br, String sessionId) throws IOException {
+		pw.println("gamePlay");
+		pw.println(sessionId);
+		String response = br.readLine();
+		if (response.equals("pass")) {
+			System.out.println("다른 클라이언트 접속 대기중");
+			if (response.equals("gameStart")) {
+				// 게임 시작
+			}
+		} else {
+			System.out.println("대기열 꽉 참");
 		}
 	}
 
