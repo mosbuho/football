@@ -218,6 +218,18 @@ public class Client {
 		}
 	}
 
+	public static void ready(PrintWriter pw, BufferedReader br, String sessionId) throws IOException {
+		pw.println("ready");
+		pw.println(sessionId);
+
+		String response = br.readLine();
+		if (response.equals("pass")) {
+			System.out.println("준비 완료");
+		} else {
+			System.out.println("대기열 꽉 참");
+		}
+	}
+
 	public static void gamePlay(PrintWriter pw, BufferedReader br, BufferedReader input, String sessionId)
 			throws IOException, InterruptedException {
 		pw.println("gamePlay");
@@ -235,7 +247,11 @@ public class Client {
 				String action = input.readLine();
 				pw.println(action);
 			}
-			Thread.sleep(1500);
+			Thread.sleep(2000);
+
+			if (response.equals("gameEnd")) {
+				break;
+			}
 		}
 	}
 
@@ -253,18 +269,6 @@ public class Client {
 			}
 		} else {
 			System.out.println("에러");
-		}
-	}
-
-	public static void ready(PrintWriter pw, BufferedReader br, String sessionId) throws IOException {
-		pw.println("ready");
-		pw.println(sessionId);
-
-		String response = br.readLine();
-		if (response.equals("pass")) {
-			System.out.println("준비 완료");
-		} else {
-			System.out.println("대기열 꽉 참");
 		}
 	}
 

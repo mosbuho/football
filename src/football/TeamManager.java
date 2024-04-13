@@ -12,7 +12,7 @@ import java.util.List;
 public class TeamManager {
 	private static final String TEAMFILE_PATH = "team.dba";
 
-	public static synchronized boolean createTeam(String teamName, ArrayList<Player> players) {
+	public static boolean createTeam(String teamName, ArrayList<Player> players) {
 		List<Team> teamList = loadTeamList();
 		for (Team team : teamList) {
 			if (team.getName().equals(teamName)) {
@@ -25,7 +25,7 @@ public class TeamManager {
 		return true;
 	}
 
-	public static synchronized boolean deleteTeam(String teamName) {
+	public static boolean deleteTeam(String teamName) {
 		List<Team> teamList = loadTeamList();
 		for (Team team : teamList) {
 			if (team.getName().equals(teamName)) {
@@ -56,7 +56,7 @@ public class TeamManager {
 		}
 	}
 
-	public static synchronized void defaultTeamCreate() {
+	public static void defaultTeamCreate() {
 		List<Team> teamList = new ArrayList<>();
 		Team team1 = new Team("Tottenham Spurs");
 		team1.addPlayer(new Player("Heung Min Son", 7, 98, 80, 49, "fw", 98));

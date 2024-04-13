@@ -21,14 +21,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Server {
 	public static final int PORT = 7777;
 	private static Random random = new Random();
-	public static Map<Socket, User> gameUserList = new HashMap<>();
-	public static List<Socket> gameUserSocketList = new ArrayList<>();
+	public static ConcurrentHashMap<Socket, User> gameUserList = new ConcurrentHashMap<>();
+	private static AtomicBoolean turn = new AtomicBoolean(random.nextBoolean());
 	private static ConcurrentHashMap<String, Integer> scores = new ConcurrentHashMap<>();
-	private static AtomicBoolean turnA = new AtomicBoolean(random.nextBoolean());
 	private static Set<PrintWriter> writers = Collections.synchronizedSet(new HashSet<>());
 	public static final int MAX_GAME_PLAYER = 2;
 	public static int round = 0;
-	public static final int MAX_ROUNDS = 1;
+	public static final int MAX_ROUNDS = 10;
 
 	public static void main(String[] args) {
 		try {
@@ -139,32 +138,54 @@ public class Server {
 		}
 	}
 
+	public static void ready(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
+		String sessionId = br.readLine();
+		if (gameUserList.size() >= MAX_GAME_PLAYER) {
+			pw.println("fail");
+			return;
+		}
+		User user = UserManager.getUserBySessionId(sessionId);
+		if (user != null) {
+			if (user.getPlayers().size() < 11) {
+				pw.println("fail");
+			} else {
+				pw.println("pass");
+				gameUserList.put(cs, user);
+				System.out.println(cs + "게임 대기열 입장");
+			}
+		} else {
+			pw.println("fail");
+		}
+
+	}
+
 	public static void gamePlay(BufferedReader br, PrintWriter pw) throws IOException, InterruptedException {
 		String sessionid = br.readLine();
 		User user = UserManager.getUserBySessionId(sessionid);
 		writers.add(pw);
 
 		pw.println("A / B 선택");
-		String AB = br.readLine();
-		boolean attPlayer = AB.contains("A");
+		String playerAB = br.readLine();
+		boolean playerA = playerAB.contains("A");
 
 		while (round < MAX_ROUNDS) {
-			if ((attPlayer && turnA.get()) || (!attPlayer && !turnA.get())) {
+			if ((playerA && turn.get()) || (!playerA && !turn.get())) {
 				pw.println("shoot 입력");
 				String action = br.readLine();
 
 				if (action.equals("shoot")) {
 					pw.println("슛 성공 / 실패");
-					scores.put(AB, 0);
-					broadcastMessage(AB + " 슛 성공 / 실패");
+					scores.put(playerAB, 0);
+					broadcastMessage(playerAB + " 슛 성공 / 실패");
 				}
-				turnA.set(!turnA.get());
+
+				turn.set(!turn.get());
+
 				if (scores.size() == 2) {
 					String winner = scores.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey();
 					broadcastMessage(winner + " 승리");
 					scores.clear();
 					gameUserList.clear();
-					gameUserSocketList.clear();
 					writers.clear();
 				}
 			} else {
@@ -172,36 +193,13 @@ public class Server {
 			}
 			Thread.sleep(6000);
 		}
+		pw.println("gameEnd");
 		round = 0;
-
 	}
 
 	public static void broadcastMessage(String msg) {
 		for (PrintWriter writer : writers) {
 			writer.println(msg);
-		}
-	}
-
-	public static void ready(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
-		String sessionId = br.readLine();
-		synchronized (gameUserList) {
-			if (gameUserList.size() >= MAX_GAME_PLAYER) {
-				pw.println("fail");
-				return;
-			}
-			User user = UserManager.getUserBySessionId(sessionId);
-			if (user != null) {
-				if (user.getPlayers().size() < 11) {
-					pw.println("fail");
-				} else {
-					pw.println("pass");
-					gameUserList.put(cs, user);
-					gameUserSocketList.add(cs);
-					System.out.println(cs + "게임 대기열 입장");
-				}
-			} else {
-				pw.println("fail");
-			}
 		}
 	}
 
@@ -258,7 +256,6 @@ public class Server {
 		}
 	}
 
-	// 내 팀 관리
 	public static void myInfo(BufferedReader br, PrintWriter pw, ObjectOutputStream oos) throws IOException {
 		String sessionId = br.readLine();
 		User user = UserManager.getUserBySessionId(sessionId);
@@ -271,7 +268,6 @@ public class Server {
 		}
 	}
 
-	// rank
 	public static void userInfo(ObjectOutputStream oos) throws IOException {
 		List<User> userList = UserManager.loadUserList();
 		oos.writeObject(userList);
@@ -282,11 +278,8 @@ public class Server {
 		System.out.println(cs + " 팀 생성");
 		String sessionId = br.readLine();
 		String teamName = br.readLine();
-
 		boolean isAdmin = UserManager.adminCheck(sessionId);
-
 		ArrayList<Player> newPlayers = new ArrayList<>();
-
 		for (int i = 0; i < 11; i++) {
 			String playerName = br.readLine();
 			int playerNumber = Integer.parseInt(br.readLine());
@@ -299,7 +292,6 @@ public class Server {
 					playerPrice);
 			newPlayers.add(player);
 		}
-
 		if (isAdmin) {
 			boolean createTeam = TeamManager.createTeam(teamName, newPlayers);
 			List<Player> playerList = new ArrayList<Player>();

@@ -13,7 +13,7 @@ import java.util.UUID;
 public class UserManager {
 	private static final String USERFILE_PATH = "user.dba";
 
-	public static synchronized User getUserBySessionId(String sessionId) {
+	public static User getUserBySessionId(String sessionId) {
 		List<User> userList = loadUserList();
 		for (User user : userList) {
 			if (user.getSessionId() != null && user.getSessionId().equals(sessionId)) {
@@ -23,7 +23,7 @@ public class UserManager {
 		return null;
 	}
 
-	public static synchronized boolean register(String userId, String userPw, String teamName) {
+	public static boolean register(String userId, String userPw, String teamName) {
 		List<User> userList = loadUserList();
 		for (User user : userList) {
 			if (user.getId().equals(userId)) {
@@ -43,7 +43,7 @@ public class UserManager {
 		return false;
 	}
 
-	public static synchronized String login(String userId, String userPw) {
+	public static String login(String userId, String userPw) {
 		List<User> userList = loadUserList();
 		for (User user : userList) {
 			if (user.getId().equals(userId) && user.getPw().equals(userPw)) {
@@ -58,7 +58,7 @@ public class UserManager {
 		return null;
 	}
 
-	public static synchronized String adminLogin(String userId, String userPw) {
+	public static String adminLogin(String userId, String userPw) {
 		List<User> userList = loadUserList();
 		for (User user : userList) {
 			if (user.getId().equals(userId) && user.getPw().equals(userPw) && user.isAdmin()) {
@@ -73,7 +73,7 @@ public class UserManager {
 		return null;
 	}
 
-	public static synchronized boolean adminCheck(String sessionId) {
+	public static boolean adminCheck(String sessionId) {
 		List<User> userList = loadUserList();
 		for (User user : userList) {
 			if (user.getSessionId() != null && user.getSessionId().equals(sessionId) && user.isAdmin()) {
@@ -83,7 +83,7 @@ public class UserManager {
 		return false;
 	}
 
-	public static synchronized void logout(String sessionId) {
+	public static void logout(String sessionId) {
 		List<User> userList = loadUserList();
 		for (User user : userList) {
 			if (user.getSessionId() != null && user.getSessionId().equals(sessionId)) {
@@ -113,7 +113,7 @@ public class UserManager {
 		}
 	}
 
-	public static synchronized void logoutAllUsers() {
+	public static void logoutAllUsers() {
 		List<User> userList = loadUserList();
 		for (User user : userList) {
 			if (user.getSessionId() != null) {

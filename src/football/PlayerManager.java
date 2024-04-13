@@ -12,7 +12,7 @@ import java.util.List;
 public class PlayerManager {
 	private static final String PLAYERFILE_PATH = "player.dba";
 
-	public static synchronized boolean createPlayer(String playerName, int playerNumber, int playerSho, int playerPas,
+	public static boolean createPlayer(String playerName, int playerNumber, int playerSho, int playerPas,
 			int playerDef, String playerPosition, int price) {
 		List<Player> playerList = loadPlayerList();
 		for (Player player : playerList) {
@@ -27,7 +27,7 @@ public class PlayerManager {
 		return true;
 	}
 
-	public static synchronized boolean deletePlayer(String playerName, int playerNumber, String playerPosition) {
+	public static boolean deletePlayer(String playerName, int playerNumber, String playerPosition) {
 		List<Player> playerList = loadPlayerList();
 		for (Player player : playerList) {
 			if (player.getName().equals(playerName) && player.getNumber() == playerNumber
@@ -59,7 +59,7 @@ public class PlayerManager {
 		}
 	}
 
-	public static synchronized void defaultPlayerCreate() {
+	public static void defaultPlayerCreate() {
 		List<Player> playerList = new ArrayList<Player>();
 		List<Team> teamList = TeamManager.loadTeamList();
 		for (Team team : teamList) {
