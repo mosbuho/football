@@ -199,7 +199,7 @@ public class Client {
 						sellPlayer(pw, input, br, sessionId);
 						break;
 					case "ready":
-						ready(pw, br, sessionId);
+						ready(pw, br, input, sessionId);
 						break;
 					case "gamePlay":
 						gamePlay(pw, br, input, sessionId);
@@ -216,12 +216,16 @@ public class Client {
 		}
 	}
 
-	public static void ready(PrintWriter pw, BufferedReader br, String sessionId) throws IOException {
+	public static void ready(PrintWriter pw, BufferedReader br, BufferedReader input, String sessionId)
+			throws IOException {
 		pw.println("ready");
 		pw.println(sessionId);
 
 		String response = br.readLine();
 		if (response.equals("pass")) {
+			System.out.println(br.readLine());
+			String ABChoice = input.readLine();
+			pw.println(ABChoice);
 			System.out.println("준비 완료");
 		} else {
 			System.out.println("대기열 꽉 참");
@@ -233,23 +237,18 @@ public class Client {
 		pw.println("gamePlay");
 		pw.println(sessionId);
 
-		System.out.println(br.readLine());
-		String ABChoice = input.readLine();
-		pw.println(ABChoice);
-
 		while (true) {
 			String response = br.readLine();
 			System.out.println(response);
 
-			if (response.equals("shoot 입력")) {
+			if (response.equals("pass 입력") || response.equals("shoot 입력")) {
 				String action = input.readLine();
 				pw.println(action);
 			}
-			Thread.sleep(2000);
-
 			if (response.equals("gameEnd")) {
 				break;
 			}
+			Thread.sleep(3000);
 		}
 	}
 

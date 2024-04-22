@@ -19,11 +19,14 @@ public class Server {
 	public static final int PORT = 7777;
 	private static Random random = new Random();
 	public static ConcurrentHashMap<Socket, User> gameUserList = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<String, ArrayList<Player>> gamingUserList = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<String, String> gamingUserListAorB = new ConcurrentHashMap<>();
 	private static AtomicBoolean turn = new AtomicBoolean(random.nextBoolean());
 	private static ConcurrentHashMap<String, Integer> scores = new ConcurrentHashMap<>();
 	private static Set<PrintWriter> writers = Collections.synchronizedSet(new HashSet<>());
 	public static final int MAX_GAME_PLAYER = 2;
 	public static int round = 0;
+	public static int inGameTurn = 0;
 	public static final int MAX_ROUNDS = 10;
 
 	public static void main(String[] args) {
@@ -148,44 +151,127 @@ public class Server {
 			} else {
 				pw.println("pass");
 				gameUserList.put(cs, user);
+				pw.println("A / B 선택");
+				String playerAB = br.readLine();
+				ArrayList<Player> playerList = (ArrayList<Player>) user.getPlayers();
+				Collections.sort(playerList);
+				gamingUserList.put(playerAB, playerList);
+				gamingUserListAorB.put(sessionId, playerAB);
 				System.out.println(cs + "게임 대기열 입장");
 			}
 		} else {
 			pw.println("fail");
 		}
-
 	}
 
 	public static void gamePlay(BufferedReader br, PrintWriter pw) throws IOException, InterruptedException {
-		String sessionid = br.readLine();
-		User user = UserManager.getUserBySessionId(sessionid);
+		String sessionId = br.readLine();
 		writers.add(pw);
-		pw.println("A / B 선택");
-		String playerAB = br.readLine();
-		boolean playerA = playerAB.contains("A");
+
+		boolean playerA = false;
+		for (Map.Entry<String, String> entry : gamingUserListAorB.entrySet()) {
+			if (entry.getKey().equals(sessionId)) {
+				if (entry.getValue().equals("A")) {
+					playerA = true;
+					break;
+				}
+			}
+		}
+
+		ArrayList<Player> aPlayerList = null;
+		ArrayList<Player> bPlayerList = null;
+		String playerAa = null;
+		String playerBb = null;
+		for (Map.Entry<String, ArrayList<Player>> entry : gamingUserList.entrySet()) {
+			if (entry.getKey().equals("A")) {
+				playerAa = "A";
+				aPlayerList = entry.getValue();
+			} else {
+				playerBb = "B";
+				bPlayerList = entry.getValue();
+			}
+		}
+
 		while (round < MAX_ROUNDS) {
 			if ((playerA && turn.get()) || (!playerA && !turn.get())) {
-				pw.println("shoot 입력");
-				String action = br.readLine();
-
-				if (action.equals("shoot")) {
-					scores.put(playerAB, 0);
-					broadcastMessage(playerAB + " 슛 성공 / 실패");
+				Player att = null;
+				Player att2 = null;
+				Player def = null;
+				if (inGameTurn <= 1) {
+					pw.println("pass 입력");
+					String action = br.readLine();
+					if (action.equals("pass")) {
+						if (inGameTurn == 0) {
+							if (turn.get()) {
+								att = aPlayerList.get(random.nextInt(4));
+								att2 = aPlayerList.get(random.nextInt(3) + 5);
+								def = bPlayerList.get(random.nextInt(3) + 8);
+							} else {
+								att = bPlayerList.get(random.nextInt(4));
+								att2 = bPlayerList.get(random.nextInt(3) + 5);
+								def = aPlayerList.get(random.nextInt(3) + 8);
+							}
+						} else {
+							if (turn.get()) {
+								att = aPlayerList.get(random.nextInt(3) + 5);
+								att2 = aPlayerList.get(random.nextInt(3) + 8);
+								def = bPlayerList.get(random.nextInt(3) + 5);
+							} else {
+								att = bPlayerList.get(random.nextInt(3) + 5);
+								att2 = bPlayerList.get(random.nextInt(3) + 8);
+								def = aPlayerList.get(random.nextInt(3) + 5);
+							}
+						}
+						if ((att.getPas() + att2.getPas()) / 2 > def.getDef()) {
+							broadcastMessage((playerA && turn.get() ? playerAa : playerBb) + " 패스 성공");
+							inGameTurn++;
+							round++;
+						} else {
+							broadcastMessage((playerA && turn.get() ? playerAa : playerBb) + " 패스 실패");
+							inGameTurn = 0;
+							turn.set(!turn.get());
+							round++;
+						}
+					}
+				} else {
+					pw.println("shoot 입력");
+					String action = br.readLine();
+					if (action.equals("shoot")) {
+						if (turn.get()) {
+							att = aPlayerList.get(random.nextInt(3) + 8);
+							def = bPlayerList.get(random.nextInt(4));
+						} else {
+							att = bPlayerList.get(random.nextInt(3) + 8);
+							def = aPlayerList.get(random.nextInt(4));
+						}
+						if (att.getSho() > def.getDef()) {
+							broadcastMessage((playerA && turn.get() ? playerAa : playerBb) + " 슛 성공");
+							scores.put((playerA && turn.get() ? playerAa : playerBb), 1);
+							inGameTurn = 0;
+							turn.set(!turn.get());
+							round++;
+						} else {
+							broadcastMessage((playerA && turn.get() ? playerAa : playerBb) + " 슛 실패");
+							inGameTurn = 0;
+							turn.set(!turn.get());
+							round++;
+						}
+					}
 				}
-				turn.set(!turn.get());
 				if (scores.size() == 2) {
 					String winner = scores.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey();
 					broadcastMessage(winner + " 승리");
-					scores.clear();
-					gameUserList.clear();
-					writers.clear();
 				}
 			} else {
 				pw.println("수비 턴");
 			}
-			Thread.sleep(6000);
+			Thread.sleep(3000);
 		}
 		pw.println("gameEnd");
+		gamingUserList.clear();
+		scores.clear();
+		gameUserList.clear();
+		writers.clear();
 		round = 0;
 	}
 
