@@ -1,5 +1,3 @@
-package football;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,7 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -64,66 +61,66 @@ public class Server {
 			String request = null;
 			while ((request = br.readLine()) != null) {
 				switch (request) {
-				case "register":
-					register(br, pw, oos, cs);
-					break;
-				case "login":
-					login(br, pw, cs);
-					break;
-				case "adminLogin":
-					adminLogin(br, pw, cs);
-					break;
-				case "teamInfo":
-					teamInfo(oos);
-					break;
-				case "playerInfo":
-					playerInfo(oos);
-					break;
-				case "userInfo":
-					userInfo(oos);
-					break;
-				case "myInfo":
-					myInfo(br, pw, oos);
-					break;
-				case "adminUserInfo":
-					adminUserInfo(br, pw, cs, oos);
-					break;
-				case "createTeam":
-					createTeam(br, pw, cs);
-					break;
-				case "createPlayer":
-					createPlayer(br, pw, cs);
-					break;
-				case "deleteTeam":
-					deleteTeam(br, pw, cs);
-					break;
-				case "deletePlayer":
-					deletePlayer(br, pw, cs);
-					break;
-				case "defaultTeamCreate":
-					defaultTeamCreate(br, pw, cs);
-					break;
-				case "defaultPlayerCreate":
-					defaultPlayerCreate(br, pw, cs);
-					break;
-				case "recruitmentPlayer":
-					recruitmentPlayer(br, pw, cs);
-					break;
-				case "userDeletePlayer":
-					userDeletePlayer(br, pw, cs);
-					break;
-				case "sellPlayer":
-					sellPlayer(br, pw, cs);
-					break;
-				case "ready":
-					ready(br, pw, cs);
-					break;
-				case "gamePlay":
-					gamePlay(br, pw);
-					break;
-				case "exit":
-					exit(br, pw, cs);
-					return;
+					case "register":
+						register(br, pw, oos, cs);
+						break;
+					case "login":
+						login(br, pw, cs);
+						break;
+					case "adminLogin":
+						adminLogin(br, pw, cs);
+						break;
+					case "teamInfo":
+						teamInfo(oos);
+						break;
+					case "playerInfo":
+						playerInfo(oos);
+						break;
+					case "userInfo":
+						userInfo(oos);
+						break;
+					case "myInfo":
+						myInfo(br, pw, oos);
+						break;
+					case "adminUserInfo":
+						adminUserInfo(br, pw, cs, oos);
+						break;
+					case "createTeam":
+						createTeam(br, pw, cs);
+						break;
+					case "createPlayer":
+						createPlayer(br, pw, cs);
+						break;
+					case "deleteTeam":
+						deleteTeam(br, pw, cs);
+						break;
+					case "deletePlayer":
+						deletePlayer(br, pw, cs);
+						break;
+					case "defaultTeamCreate":
+						defaultTeamCreate(br, pw, cs);
+						break;
+					case "defaultPlayerCreate":
+						defaultPlayerCreate(br, pw, cs);
+						break;
+					case "recruitmentPlayer":
+						recruitmentPlayer(br, pw, cs);
+						break;
+					case "userDeletePlayer":
+						userDeletePlayer(br, pw, cs);
+						break;
+					case "sellPlayer":
+						sellPlayer(br, pw, cs);
+						break;
+					case "ready":
+						ready(br, pw, cs);
+						break;
+					case "gamePlay":
+						gamePlay(br, pw);
+						break;
+					case "exit":
+						exit(br, pw, cs);
+						return;
 				}
 			}
 		} catch (IOException e) {
@@ -163,24 +160,19 @@ public class Server {
 		String sessionid = br.readLine();
 		User user = UserManager.getUserBySessionId(sessionid);
 		writers.add(pw);
-
 		pw.println("A / B 선택");
 		String playerAB = br.readLine();
 		boolean playerA = playerAB.contains("A");
-
 		while (round < MAX_ROUNDS) {
 			if ((playerA && turn.get()) || (!playerA && !turn.get())) {
 				pw.println("shoot 입력");
 				String action = br.readLine();
 
 				if (action.equals("shoot")) {
-					pw.println("슛 성공 / 실패");
 					scores.put(playerAB, 0);
 					broadcastMessage(playerAB + " 슛 성공 / 실패");
 				}
-
 				turn.set(!turn.get());
-
 				if (scores.size() == 2) {
 					String winner = scores.entrySet().stream().max(Map.Entry.comparingByValue()).get().getKey();
 					broadcastMessage(winner + " 승리");
@@ -348,7 +340,6 @@ public class Server {
 		String playerName = br.readLine();
 		int playerNumber = Integer.parseInt(br.readLine());
 		String playerPosition = br.readLine();
-
 		boolean isAdmin = UserManager.adminCheck(sessionId);
 		if (isAdmin) {
 			boolean deletePlayer = PlayerManager.deletePlayer(playerName, playerNumber, playerPosition);
@@ -388,14 +379,12 @@ public class Server {
 		String playerName = br.readLine();
 		int playerNumber = Integer.parseInt(br.readLine());
 		String playerPosition = br.readLine();
-
 		ArrayList<User> userList = (ArrayList<User>) UserManager.loadUserList();
 		boolean userFound = false;
 		for (User user : userList) {
 			if (user.getSessionId().equals(sessionId)) {
 				userFound = true;
 				ArrayList<Player> userPlayers = (ArrayList<Player>) user.getPlayers();
-
 				for (Player player : userPlayers) {
 					if (player.getName().equals(playerName) && player.getNumber() == playerNumber
 							&& player.getPosition().equals(playerPosition)) {
@@ -420,14 +409,12 @@ public class Server {
 		String playerName = br.readLine();
 		int playerNumber = Integer.parseInt(br.readLine());
 		String playerPosition = br.readLine();
-
 		ArrayList<User> userList = (ArrayList<User>) UserManager.loadUserList();
 		boolean userFound = false;
 		for (User user : userList) {
 			if (user.getSessionId().equals(sessionId)) {
 				userFound = true;
 				ArrayList<Player> userPlayers = (ArrayList<Player>) user.getPlayers();
-
 				for (Player player : userPlayers) {
 					if (player.getName().equals(playerName) && player.getNumber() == playerNumber
 							&& player.getPosition().equals(playerPosition)) {

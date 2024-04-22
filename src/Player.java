@@ -1,5 +1,3 @@
-package football;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -34,18 +32,18 @@ public class Player implements Comparable<Player>, Serializable {
 		this.position = position;
 		this.price = price;
 		switch (position) {
-		case "gk":
-			this.index = 0;
-			break;
-		case "df":
-			this.index = 1;
-			break;
-		case "mf":
-			this.index = 2;
-			break;
-		case "fw":
-			this.index = 3;
-			break;
+			case "gk":
+				this.index = 0;
+				break;
+			case "df":
+				this.index = 1;
+				break;
+			case "mf":
+				this.index = 2;
+				break;
+			case "fw":
+				this.index = 3;
+				break;
 		}
 	}
 

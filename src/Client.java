@@ -1,5 +1,3 @@
-package football;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,187 +26,187 @@ public class Client {
 					System.out.println("1. 회원가입 2. 로그인 3. 관리자 4. 종료");
 					menu = Integer.parseInt(input.readLine());
 					switch (menu) {
-					case 1:
-						menuChoice = "register";
-						break;
-					case 2:
-						menuChoice = "login";
-						break;
-					case 3:
-						menuChoice = "adminLogin";
-						break;
-					case 4:
-						menuChoice = "exit";
-						break;
-					default:
-						System.out.println("올바른 값 입력");
-						break;
+						case 1:
+							menuChoice = "register";
+							break;
+						case 2:
+							menuChoice = "login";
+							break;
+						case 3:
+							menuChoice = "adminLogin";
+							break;
+						case 4:
+							menuChoice = "exit";
+							break;
+						default:
+							System.out.println("올바른 값 입력");
+							break;
 					}
 				} else if (isAdmin) {
 					System.out.println(
 							"1. 팀 목록 2. 선수 목록 3. 유저 목록 4. 팀 생성 5. 선수 생성 6. 팀 삭제 7. 선수 삭제 8. 팀 목록 초기화 9. 선수 목록 초기화 10. 종료");
 					menu = Integer.parseInt(input.readLine());
 					switch (menu) {
-					case 1:
-						menuChoice = "teamInfo";
-						break;
-					case 2:
-						menuChoice = "playerInfo";
-						break;
-					case 3:
-						menuChoice = "adminUserInfo";
-						break;
-					case 4:
-						menuChoice = "createTeam";
-						break;
-					case 5:
-						menuChoice = "createPlayer";
-						break;
-					case 6:
-						menuChoice = "deleteTeam";
-						break;
-					case 7:
-						menuChoice = "deletePlayer";
-						break;
-					case 8:
-						menuChoice = "defaultTeamCreate";
-						break;
-					case 9:
-						menuChoice = "defaultPlayerCreate";
-						break;
-					case 10:
-						menuChoice = "exit";
-						break;
-					default:
-						System.out.println("올바른 값 입력");
-						break;
+						case 1:
+							menuChoice = "teamInfo";
+							break;
+						case 2:
+							menuChoice = "playerInfo";
+							break;
+						case 3:
+							menuChoice = "adminUserInfo";
+							break;
+						case 4:
+							menuChoice = "createTeam";
+							break;
+						case 5:
+							menuChoice = "createPlayer";
+							break;
+						case 6:
+							menuChoice = "deleteTeam";
+							break;
+						case 7:
+							menuChoice = "deletePlayer";
+							break;
+						case 8:
+							menuChoice = "defaultTeamCreate";
+							break;
+						case 9:
+							menuChoice = "defaultPlayerCreate";
+							break;
+						case 10:
+							menuChoice = "exit";
+							break;
+						default:
+							System.out.println("올바른 값 입력");
+							break;
 					}
 				} else {
 					System.out.println("1. 팀 목록 2. 선수 목록 3. 순위 4. 이적 시장 5. 내 팀 관리 6. 레디 7. 플레이 8. 종료");
 					menu = Integer.parseInt(input.readLine());
 					switch (menu) {
-					case 1:
-						menuChoice = "teamInfo";
-						break;
-					case 2:
-						menuChoice = "playerInfo";
-						break;
-					case 3:
-						menuChoice = "userInfo";
-						break;
-					case 4:
-						menuChoice = "transMarket";
-						break;
-					case 5:
-						myInfo(pw, br, sessionId, ois);
-						System.out.println("1. 방출 2. 판매 3. 영입");
-						int inMenu = Integer.parseInt(input.readLine());
-						switch (inMenu) {
 						case 1:
-							menuChoice = "userDeletePlayer";
+							menuChoice = "teamInfo";
 							break;
 						case 2:
-							menuChoice = "sellPlayer";
+							menuChoice = "playerInfo";
 							break;
 						case 3:
+							menuChoice = "userInfo";
+							break;
+						case 4:
 							menuChoice = "transMarket";
+							break;
+						case 5:
+							myInfo(pw, br, sessionId, ois);
+							System.out.println("1. 방출 2. 판매 3. 영입");
+							int inMenu = Integer.parseInt(input.readLine());
+							switch (inMenu) {
+								case 1:
+									menuChoice = "userDeletePlayer";
+									break;
+								case 2:
+									menuChoice = "sellPlayer";
+									break;
+								case 3:
+									menuChoice = "transMarket";
+									break;
+								default:
+									System.out.println("올바른 값 입력");
+									break;
+							}
+							break;
+						case 6:
+							menuChoice = "ready";
+							break;
+						case 7:
+							menuChoice = "gamePlay";
+							break;
+						case 8:
+							menuChoice = "exit";
 							break;
 						default:
 							System.out.println("올바른 값 입력");
 							break;
-						}
-						break;
-					case 6:
-						menuChoice = "ready";
-						break;
-					case 7:
-						menuChoice = "gamePlay";
-						break;
-					case 8:
-						menuChoice = "exit";
-						break;
-					default:
-						System.out.println("올바른 값 입력");
-						break;
 					}
 				}
 
 				switch (menuChoice) {
-				case "register":
-					register(pw, input, br, ois);
-					break;
-				case "login":
-					String loginCheck = login(pw, input, br);
-					if (loginCheck != null) {
-						sessionId = loginCheck;
-						System.out.println("로그인 성공");
-					} else {
-						System.out.println("로그인 실패");
-					}
-					break;
-				case "adminLogin":
-					loginCheck = adminLogin(pw, input, br);
-					if (loginCheck != null) {
-						sessionId = loginCheck;
-						isAdmin = true;
-						System.out.println("로그인 성공");
-					} else {
-						System.out.println("로그인 실패");
-					}
-					break;
-				case "teamInfo":
-					pw.println("teamInfo");
-					teamInfo(ois);
-					break;
-				case "playerInfo":
-					pw.println("playerInfo");
-					playerInfo(ois);
-					break;
-				case "userInfo":
-					pw.println("userInfo");
-					userInfo(ois);
-					break;
-				case "adminUserInfo":
-					adminUserInfo(pw, br, sessionId, ois);
-					break;
-				case "createTeam":
-					createTeam(pw, input, br, sessionId);
-					break;
-				case "createPlayer":
-					createPlayer(pw, input, br, sessionId);
-					break;
-				case "deleteTeam":
-					deleteTeam(pw, input, br, sessionId);
-					break;
-				case "deletePlayer":
-					deletePlayer(pw, input, br, sessionId);
-					break;
-				case "defaultTeamCreate":
-					defaultTeamCreate(pw, br, sessionId);
-					break;
-				case "defaultPlayerCreate":
-					defaultPlayerCreate(pw, br, sessionId);
-					break;
-				case "transMarket":
-					pw.println("playerInfo");
-					playerInfo(ois);
-					recruitmentPlayer(pw, input, br, sessionId);
-					break;
-				case "userDeletePlayer":
-					userDeletePlayer(pw, input, br, sessionId);
-					break;
-				case "sellPlayer":
-					sellPlayer(pw, input, br, sessionId);
-					break;
-				case "ready":
-					ready(pw, br, sessionId);
-					break;
-				case "gamePlay":
-					gamePlay(pw, br, input, sessionId);
-					break;
-				case "exit":
-					exit(pw, sessionId);
-					return;
+					case "register":
+						register(pw, input, br, ois);
+						break;
+					case "login":
+						String loginCheck = login(pw, input, br);
+						if (loginCheck != null) {
+							sessionId = loginCheck;
+							System.out.println("로그인 성공");
+						} else {
+							System.out.println("로그인 실패");
+						}
+						break;
+					case "adminLogin":
+						loginCheck = adminLogin(pw, input, br);
+						if (loginCheck != null) {
+							sessionId = loginCheck;
+							isAdmin = true;
+							System.out.println("로그인 성공");
+						} else {
+							System.out.println("로그인 실패");
+						}
+						break;
+					case "teamInfo":
+						pw.println("teamInfo");
+						teamInfo(ois);
+						break;
+					case "playerInfo":
+						pw.println("playerInfo");
+						playerInfo(ois);
+						break;
+					case "userInfo":
+						pw.println("userInfo");
+						userInfo(ois);
+						break;
+					case "adminUserInfo":
+						adminUserInfo(pw, br, sessionId, ois);
+						break;
+					case "createTeam":
+						createTeam(pw, input, br, sessionId);
+						break;
+					case "createPlayer":
+						createPlayer(pw, input, br, sessionId);
+						break;
+					case "deleteTeam":
+						deleteTeam(pw, input, br, sessionId);
+						break;
+					case "deletePlayer":
+						deletePlayer(pw, input, br, sessionId);
+						break;
+					case "defaultTeamCreate":
+						defaultTeamCreate(pw, br, sessionId);
+						break;
+					case "defaultPlayerCreate":
+						defaultPlayerCreate(pw, br, sessionId);
+						break;
+					case "transMarket":
+						pw.println("playerInfo");
+						playerInfo(ois);
+						recruitmentPlayer(pw, input, br, sessionId);
+						break;
+					case "userDeletePlayer":
+						userDeletePlayer(pw, input, br, sessionId);
+						break;
+					case "sellPlayer":
+						sellPlayer(pw, input, br, sessionId);
+						break;
+					case "ready":
+						ready(pw, br, sessionId);
+						break;
+					case "gamePlay":
+						gamePlay(pw, br, input, sessionId);
+						break;
+					case "exit":
+						exit(pw, sessionId);
+						return;
 				}
 			}
 		} catch (UnknownHostException e) {
