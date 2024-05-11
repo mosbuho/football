@@ -1,7 +1,10 @@
 package model;
 
-public class Player {
+import java.io.Serializable;
+
+public class Player implements Serializable {
 	private int pNo;
+	private int cNo;
 	private String pName;
 	private String pUniformNo;
 	private String pPosition;
@@ -10,9 +13,10 @@ public class Player {
 	private int pDef;
 	private int pPrice;
 
-	public Player(int pNo, String pName, String pUniformNo, String pPosition, int pSho, int pPas, int pDef,
+	public Player(int pNo, int cNo, String pName, String pUniformNo, String pPosition, int pSho, int pPas, int pDef,
 			int pPrice) {
 		this.pNo = pNo;
+		this.cNo = cNo;
 		this.pName = pName;
 		this.pUniformNo = pUniformNo;
 		this.pPosition = pPosition;
@@ -88,8 +92,8 @@ public class Player {
 
 	@Override
 	public String toString() {
-		return "pNo=" + pNo + ", pName=" + pName + ", pUniformNo=" + pUniformNo + ", pPosition=" + pPosition
-				+ ", pSho=" + pSho + ", pPas=" + pPas + ", pDef=" + pDef + ", pPrice=" + pPrice;
+		return String.format("선수 번호 : %d, 팀 번호 : %d, 선수 이름 : %s, 등번호 : %s, 포지션 : %s, 슈팅 : %d, 패스 : %d, 수비 : %d, 가격 : %d",
+				pNo, cNo, pName, pUniformNo, pPosition, pSho, pPas, pDef, pPrice);
 	}
 
 }

@@ -1,16 +1,17 @@
 package model;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.util.ArrayList;
 
-public class Club {
+public class Club implements Serializable {
 	private int cNo;
 	private String cName;
-	private Date cCreation;
+	private ArrayList<Player> playerList;
 
-	public Club(int cNo, String cName, Date cCreation) {
+	public Club(int cNo, String cName) {
 		this.cNo = cNo;
 		this.cName = cName;
-		this.cCreation = cCreation;
+		this.playerList = new ArrayList<>();
 	}
 
 	public int getcNo() {
@@ -29,17 +30,25 @@ public class Club {
 		this.cName = cName;
 	}
 
-	public Date getcCreation() {
-		return cCreation;
+	public ArrayList<Player> getPlayerList() {
+		return playerList;
 	}
 
-	public void setcCreation(Date cCreation) {
-		this.cCreation = cCreation;
+	public void setPlayerList(ArrayList<Player> playerList) {
+		this.playerList = playerList;
+	}
+
+	public void addPlayer(Player player) {
+		this.playerList.add(player);
 	}
 
 	@Override
 	public String toString() {
-		return "cNo=" + cNo + ", cName=" + cName + ", cCreation=" + cCreation;
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format("팀 번호: %d, 팀 이름: %s\n", cNo, cName));
+		for (Player player : playerList) {
+			sb.append(player).append("\n");
+		}
+		return sb.toString();
 	}
-
 }

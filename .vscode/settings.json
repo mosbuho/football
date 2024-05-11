@@ -3,5 +3,24 @@
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
         "lib/**/*.jar"
-    ]
+    ],
+    "oracledevtools.formatterSettings": {
+        "identifierCasing": "Same as Intellisense",
+        "keywordCasing": "Same as Intellisense",
+        "1-LineLongComments": "Don't format",
+        "lineBreaksBetweenStatements": "Double break",
+        "lineBreakOnComma": "After",
+        "lineBreakOnConcatenation": "Before",
+        "lineBreakOnBooleanConnectors": "Before",
+        "lineBreakOnANSI-joins": true,
+        "lineBreakBeforeLineComments": false,
+        "lineBreakAfterSelect/From/Where": true,
+        "lineBreaksOnIf/Case/While": "Indented actions, inlined conditions",
+        "whiteSpaceAroundOperators": "Don't format",
+        "whiteSpaceAfterCommas": true,
+        "whiteSpaceAroundParenthesis": "Don't format",
+        "commasPerLine": 1,
+        "spacesInsideParenthesis": 1,
+        "spacesOutsideParenthesis": 1
+    }
 }

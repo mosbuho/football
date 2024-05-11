@@ -1,19 +1,21 @@
 package model;
 
-public class Gamer {
+import java.io.Serializable;
+
+public class Gamer implements Serializable {
 	private int gNo;
 	private int cNo;
 	private String gId;
 	private String gPw;
 	private String gSessionId;
-	private boolean gIsAdmin;
+	private int gIsAdmin;
 	private int gBalance;
 	private int gGkCount;
 	private int gDfCount;
 	private int gMfCount;
 	private int gFwCount;
 
-	public Gamer(int gNo, int cNo, String gId, String gPw, String gSessionId, boolean gIsAdmin, int gBalance,
+	public Gamer(int gNo, int cNo, String gId, String gPw, String gSessionId, int gIsAdmin, int gBalance,
 			int gGkCount, int gDfCount, int gMfCount, int gFwCount) {
 		this.gNo = gNo;
 		this.cNo = cNo;
@@ -68,11 +70,11 @@ public class Gamer {
 		this.gSessionId = gSessionId;
 	}
 
-	public boolean isgIsAdmin() {
+	public int isgIsAdmin() {
 		return gIsAdmin;
 	}
 
-	public void setgIsAdmin(boolean gIsAdmin) {
+	public void setgIsAdmin(int gIsAdmin) {
 		this.gIsAdmin = gIsAdmin;
 	}
 
@@ -118,9 +120,8 @@ public class Gamer {
 
 	@Override
 	public String toString() {
-		return "gNo=" + gNo + ", cNo=" + cNo + ", gId=" + gId + ", gPw=" + gPw + ", gSessionId=" + gSessionId
-				+ ", gIsAdmin=" + gIsAdmin + ", gBalance=" + gBalance + ", gGkCount=" + gGkCount + ", gDfCount="
-				+ gDfCount + ", gMfCount=" + gMfCount + ", gFwCount=" + gFwCount;
+		return String.format(
+				"gNo=%d, cNo=%d, gId=%s, gPw=%s, gSessionId=%s, gIsAdmin=%d, gBalance=%d, gGkCount=%d, gDfCount=%d, gMfCount=%d, gFwCount=%d",
+				gNo, cNo, gId, gPw, gSessionId, gIsAdmin, gBalance, gGkCount, gDfCount, gMfCount, gFwCount);
 	}
-
 }
