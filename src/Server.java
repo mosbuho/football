@@ -15,10 +15,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import model.Club;
+import model.Gamer;
+import model.Player;
+
 public class Server {
 	public static final int PORT = 7777;
 	private static Random random = new Random();
-	public static ConcurrentHashMap<Socket, User> gameUserList = new ConcurrentHashMap<>();
+	public static ConcurrentHashMap<Socket, Gamer> gameUserList = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<String, ArrayList<Player>> gamingUserList = new ConcurrentHashMap<>();
 	public static ConcurrentHashMap<String, String> gamingUserListAorB = new ConcurrentHashMap<>();
 	private static AtomicBoolean turn = new AtomicBoolean(random.nextBoolean());
@@ -34,9 +38,9 @@ public class Server {
 			ServerSocket ss = new ServerSocket(PORT);
 			System.out.println("서버 온");
 
-			TeamManager.defaultTeamCreate();
+			ClubManager.defaultTeamCreate();
 			PlayerManager.defaultPlayerCreate();
-			UserManager.logoutAllUsers();
+			GamerManager.logoutAllUsers();
 
 			while (true) {
 				Socket cs = ss.accept();
@@ -144,7 +148,7 @@ public class Server {
 			pw.println("fail");
 			return;
 		}
-		User user = UserManager.getUserBySessionId(sessionId);
+		Gamer user = GamerManager.getUserBySessionId(sessionId);
 		if (user != null) {
 			if (user.getPlayers().size() < 11) {
 				pw.println("fail");
@@ -288,7 +292,7 @@ public class Server {
 		String userPw = br.readLine();
 		teamInfo(oos);
 		String teamName = br.readLine();
-		boolean isReg = UserManager.register(userId, userPw, teamName);
+		boolean isReg = GamerManager.register(userId, userPw, teamName);
 		pw.println(isReg ? "pass" : "fail");
 	}
 
@@ -296,7 +300,7 @@ public class Server {
 		System.out.println(cs + " 로그인 시도");
 		String userId = br.readLine();
 		String userPw = br.readLine();
-		String sessionId = UserManager.login(userId, userPw);
+		String sessionId = GamerManager.login(userId, userPw);
 		pw.println((sessionId != null) ? sessionId : "fail");
 	}
 
@@ -304,12 +308,12 @@ public class Server {
 		System.out.println(cs + " 어드민 로그인 시도");
 		String userId = br.readLine();
 		String userPw = br.readLine();
-		String sessionId = UserManager.adminLogin(userId, userPw);
+		String sessionId = GamerManager.adminLogin(userId, userPw);
 		pw.println((sessionId != null) ? sessionId : "fail");
 	}
 
 	public static void teamInfo(ObjectOutputStream oos) throws IOException {
-		List<Team> teamList = TeamManager.loadTeamList();
+		List<Club> teamList = ClubManager.loadTeamList();
 		oos.writeObject(teamList);
 		oos.flush();
 	}
@@ -323,10 +327,10 @@ public class Server {
 	public static void adminUserInfo(BufferedReader br, PrintWriter pw, Socket cs, ObjectOutputStream oos)
 			throws IOException {
 		String sessionId = br.readLine();
-		boolean isAdmin = UserManager.adminCheck(sessionId);
+		boolean isAdmin = GamerManager.adminCheck(sessionId);
 		if (isAdmin) {
 			pw.println("pass");
-			List<User> userList = UserManager.loadUserList();
+			List<Gamer> userList = GamerManager.loadUserList();
 			oos.writeObject(userList);
 			oos.flush();
 		} else {
@@ -336,7 +340,7 @@ public class Server {
 
 	public static void myInfo(BufferedReader br, PrintWriter pw, ObjectOutputStream oos) throws IOException {
 		String sessionId = br.readLine();
-		User user = UserManager.getUserBySessionId(sessionId);
+		Gamer user = GamerManager.getUserBySessionId(sessionId);
 		if (user != null) {
 			pw.println("pass");
 			oos.writeObject(user);
@@ -347,7 +351,7 @@ public class Server {
 	}
 
 	public static void userInfo(ObjectOutputStream oos) throws IOException {
-		List<User> userList = UserManager.loadUserList();
+		List<Gamer> userList = GamerManager.loadUserList();
 		oos.writeObject(userList);
 		oos.flush();
 	}
@@ -356,7 +360,7 @@ public class Server {
 		System.out.println(cs + " 팀 생성");
 		String sessionId = br.readLine();
 		String teamName = br.readLine();
-		boolean isAdmin = UserManager.adminCheck(sessionId);
+		boolean isAdmin = GamerManager.adminCheck(sessionId);
 		ArrayList<Player> newPlayers = new ArrayList<>();
 		for (int i = 0; i < 11; i++) {
 			String playerName = br.readLine();
@@ -371,10 +375,10 @@ public class Server {
 			newPlayers.add(player);
 		}
 		if (isAdmin) {
-			boolean createTeam = TeamManager.createTeam(teamName, newPlayers);
+			boolean createTeam = ClubManager.createTeam(teamName, newPlayers);
 			List<Player> playerList = new ArrayList<Player>();
-			List<Team> teamList = TeamManager.loadTeamList();
-			for (Team team : teamList) {
+			List<Club> teamList = ClubManager.loadTeamList();
+			for (Club team : teamList) {
 				List<Player> players = team.getPlayers();
 				playerList.addAll(players);
 			}
@@ -396,7 +400,7 @@ public class Server {
 		String playerPosition = br.readLine();
 		int playerPrice = Integer.parseInt(br.readLine());
 
-		boolean isAdmin = UserManager.adminCheck(sessionId);
+		boolean isAdmin = GamerManager.adminCheck(sessionId);
 		if (isAdmin) {
 			boolean createPlayer = PlayerManager.createPlayer(playerName, playerNumber, playerSho, playerPas, playerDef,
 					playerPosition, playerPrice);
@@ -411,9 +415,9 @@ public class Server {
 		String sessionId = br.readLine();
 		String teamName = br.readLine();
 
-		boolean isAdmin = UserManager.adminCheck(sessionId);
+		boolean isAdmin = GamerManager.adminCheck(sessionId);
 		if (isAdmin) {
-			boolean deleteTeam = TeamManager.deleteTeam(teamName);
+			boolean deleteTeam = ClubManager.deleteTeam(teamName);
 			pw.println(deleteTeam ? "pass" : "fail");
 		} else {
 			pw.println("fail");
@@ -426,7 +430,7 @@ public class Server {
 		String playerName = br.readLine();
 		int playerNumber = Integer.parseInt(br.readLine());
 		String playerPosition = br.readLine();
-		boolean isAdmin = UserManager.adminCheck(sessionId);
+		boolean isAdmin = GamerManager.adminCheck(sessionId);
 		if (isAdmin) {
 			boolean deletePlayer = PlayerManager.deletePlayer(playerName, playerNumber, playerPosition);
 			pw.println(deletePlayer ? "pass" : "fail");
@@ -438,9 +442,9 @@ public class Server {
 	public static void defaultTeamCreate(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
 		System.out.println(cs + " 팀 목록 초기화");
 		String sessionId = br.readLine();
-		boolean isAdmin = UserManager.adminCheck(sessionId);
+		boolean isAdmin = GamerManager.adminCheck(sessionId);
 		if (isAdmin) {
-			TeamManager.defaultTeamCreate();
+			ClubManager.defaultTeamCreate();
 		} else {
 			pw.println("fail");
 		}
@@ -450,7 +454,7 @@ public class Server {
 	public static void defaultPlayerCreate(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
 		System.out.println(cs + " 선수 목록 초기화");
 		String sessionId = br.readLine();
-		boolean isAdmin = UserManager.adminCheck(sessionId);
+		boolean isAdmin = GamerManager.adminCheck(sessionId);
 		if (isAdmin) {
 			PlayerManager.defaultPlayerCreate();
 		} else {
@@ -465,9 +469,9 @@ public class Server {
 		String playerName = br.readLine();
 		int playerNumber = Integer.parseInt(br.readLine());
 		String playerPosition = br.readLine();
-		ArrayList<User> userList = (ArrayList<User>) UserManager.loadUserList();
+		ArrayList<Gamer> userList = (ArrayList<Gamer>) GamerManager.loadUserList();
 		boolean userFound = false;
-		for (User user : userList) {
+		for (Gamer user : userList) {
 			if (user.getSessionId().equals(sessionId)) {
 				userFound = true;
 				ArrayList<Player> userPlayers = (ArrayList<Player>) user.getPlayers();
@@ -475,7 +479,7 @@ public class Server {
 					if (player.getName().equals(playerName) && player.getNumber() == playerNumber
 							&& player.getPosition().equals(playerPosition)) {
 						user.removePlayer(player);
-						UserManager.saveUserList(userList);
+						GamerManager.saveUserList(userList);
 						pw.println("pass");
 						return;
 					}
@@ -495,9 +499,9 @@ public class Server {
 		String playerName = br.readLine();
 		int playerNumber = Integer.parseInt(br.readLine());
 		String playerPosition = br.readLine();
-		ArrayList<User> userList = (ArrayList<User>) UserManager.loadUserList();
+		ArrayList<Gamer> userList = (ArrayList<Gamer>) GamerManager.loadUserList();
 		boolean userFound = false;
-		for (User user : userList) {
+		for (Gamer user : userList) {
 			if (user.getSessionId().equals(sessionId)) {
 				userFound = true;
 				ArrayList<Player> userPlayers = (ArrayList<Player>) user.getPlayers();
@@ -505,7 +509,7 @@ public class Server {
 					if (player.getName().equals(playerName) && player.getNumber() == playerNumber
 							&& player.getPosition().equals(playerPosition)) {
 						user.sellPlayer(player);
-						UserManager.saveUserList(userList);
+						GamerManager.saveUserList(userList);
 						pw.println("pass");
 						return;
 					}
@@ -526,12 +530,12 @@ public class Server {
 		int playerNumber = Integer.parseInt(br.readLine());
 		String playerPosition = br.readLine();
 
-		ArrayList<User> userList = (ArrayList<User>) UserManager.loadUserList();
+		ArrayList<Gamer> userList = (ArrayList<Gamer>) GamerManager.loadUserList();
 		ArrayList<Player> playerList = (ArrayList<Player>) PlayerManager.loadPlayerList();
 		boolean userFound = false;
 		boolean playerFound = false;
 
-		for (User user : userList) {
+		for (Gamer user : userList) {
 			if (user.getSessionId().equals(sessionId)) {
 				userFound = true;
 				ArrayList<Player> userPlayers = (ArrayList<Player>) user.getPlayers();
@@ -550,7 +554,7 @@ public class Server {
 						playerFound = true;
 						if (user.getBalance() > player.getPrice()) {
 							boolean addPlayer = user.addPlayer(player);
-							UserManager.saveUserList(userList);
+							GamerManager.saveUserList(userList);
 							if (addPlayer) {
 								pw.println("pass");
 							} else {
@@ -571,7 +575,7 @@ public class Server {
 		System.out.println(cs + " 종료");
 		String sessionId = br.readLine();
 		if (sessionId != null && !sessionId.isEmpty()) {
-			UserManager.logout(sessionId);
+			GamerManager.logout(sessionId);
 		}
 	}
 }

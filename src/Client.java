@@ -7,6 +7,10 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import model.Club;
+import model.Gamer;
+import model.Player;
+
 public class Client {
 	public static final int PORT = 7777;
 
@@ -259,7 +263,7 @@ public class Client {
 		String response = br.readLine();
 		if (response.equals("pass")) {
 			try {
-				User user = (User) ois.readObject();
+				Gamer user = (Gamer) ois.readObject();
 				System.out.println(user.admintoString());
 			} catch (ClassNotFoundException e) {
 				System.out.println("내 정보 수신 오류 : " + e.getMessage());
@@ -329,7 +333,7 @@ public class Client {
 
 	public static void teamInfo(ObjectInputStream ois) {
 		try {
-			List<Team> teamList = (List<Team>) ois.readObject();
+			List<Club> teamList = (List<Club>) ois.readObject();
 			System.out.println(teamList);
 		} catch (ClassNotFoundException | IOException e) {
 			System.out.println("팀 목록 수신 오류 : " + e.getMessage());
@@ -347,7 +351,7 @@ public class Client {
 
 	public static void userInfo(ObjectInputStream ois) {
 		try {
-			List<User> userList = (List<User>) ois.readObject();
+			List<Gamer> userList = (List<Gamer>) ois.readObject();
 			System.out.println(userList);
 		} catch (ClassNotFoundException | IOException e) {
 			System.out.println("유저 목록 수신 오류 : " + e.getMessage());
@@ -361,8 +365,8 @@ public class Client {
 		String response = br.readLine();
 		if (response.equals("pass")) {
 			try {
-				List<User> userList = (List<User>) ois.readObject();
-				for (User user : userList) {
+				List<Gamer> userList = (List<Gamer>) ois.readObject();
+				for (Gamer user : userList) {
 					System.out.println(user.admintoString());
 				}
 			} catch (ClassNotFoundException | IOException e) {
