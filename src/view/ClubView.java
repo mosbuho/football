@@ -14,7 +14,7 @@ public class ClubView {
             ArrayList<Club> clubList = (ArrayList<Club>) ois.readObject();
             System.out.println(clubList);
         } catch (ClassNotFoundException | IOException e) {
-            System.out.println("팀 정보 수신 중 에러 " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

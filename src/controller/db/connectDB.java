@@ -7,12 +7,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class connetDB {
+public class connectDB {
     public static Connection getConnection() {
         Properties pt = new Properties();
-        String filePath = "src/controller/db/db.properties";
         Connection con = null;
-        try (FileReader fr = new FileReader(filePath)) {
+        try (FileReader fr = new FileReader("src/controller/db/db.properties")) {
             pt.load(fr);
             String url = pt.getProperty("url");
             String user = pt.getProperty("user");

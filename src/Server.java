@@ -8,13 +8,13 @@ import java.net.Socket;
 
 import controller.Club.ClubManager;
 import controller.Gamer.GamerManager;
+import controller.Player.PlayerManager;
 
 public class Server {
     public static final int PORT = 7777;
 
     public static void main(String[] args) {
-        try {
-            ServerSocket ss = new ServerSocket(PORT);
+        try (ServerSocket ss = new ServerSocket(PORT)) {
             System.out.println("서버 온");
             while (true) {
                 Socket cs = ss.accept();
@@ -29,9 +29,10 @@ public class Server {
     }
 
     public static void csHandler(Socket cs) {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(cs.getInputStream()))) {
-            PrintWriter pw = new PrintWriter(cs.getOutputStream(), true);
-            ObjectOutputStream oos = new ObjectOutputStream(cs.getOutputStream());
+        try (cs;
+                BufferedReader br = new BufferedReader(new InputStreamReader(cs.getInputStream()));
+                PrintWriter pw = new PrintWriter(cs.getOutputStream(), true);
+                ObjectOutputStream oos = new ObjectOutputStream(cs.getOutputStream());) {
             String request = null;
             while ((request = br.readLine()) != null) {
                 switch (request) {
@@ -43,6 +44,27 @@ public class Server {
                         break;
                     case "getClubList":
                         ClubManager.getClubList(oos);
+                        break;
+                    case "getPlayerList":
+                        PlayerManager.getPlayerList(oos);
+                        break;
+                    case "getGamerList":
+                        GamerManager.getGamerList(oos);
+                        break;
+                    case "getMyClubInfo":
+                        GamerManager.getMyClubInfo(br, pw, oos);
+                        break;
+                    case "dropPlayer":
+                        GamerManager.dropPlayer(br, pw);
+                        break;
+                    case "sellPlayer":
+                        GamerManager.sellPlayer(br, pw);
+                        break;
+                    case "buyPlayer":
+                        GamerManager.buyPlayer(br, pw);
+                        break;
+                    case "logout":
+                        GamerManager.logout(br, pw);
                         break;
                 }
             }

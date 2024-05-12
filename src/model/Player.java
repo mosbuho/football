@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Player implements Serializable {
 	private int pNo;
 	private int cNo;
+	private String cName;
 	private String pName;
 	private String pUniformNo;
 	private String pPosition;
@@ -13,10 +14,11 @@ public class Player implements Serializable {
 	private int pDef;
 	private int pPrice;
 
-	public Player(int pNo, int cNo, String pName, String pUniformNo, String pPosition, int pSho, int pPas, int pDef,
-			int pPrice) {
+	public Player(int pNo, int cNo, String cName, String pName, String pUniformNo, String pPosition, int pSho, int pPas,
+			int pDef, int pPrice) {
 		this.pNo = pNo;
 		this.cNo = cNo;
+		this.cName = cName;
 		this.pName = pName;
 		this.pUniformNo = pUniformNo;
 		this.pPosition = pPosition;
@@ -34,8 +36,24 @@ public class Player implements Serializable {
 		this.pNo = pNo;
 	}
 
+	public int getcNo() {
+		return cNo;
+	}
+
+	public void setcNo(int cNo) {
+		this.cNo = cNo;
+	}
+
 	public String getpName() {
 		return pName;
+	}
+
+	public void setcName(String cName) {
+		this.cName = cName;
+	}
+
+	public String getcName() {
+		return cName;
 	}
 
 	public void setpName(String pName) {
@@ -92,8 +110,9 @@ public class Player implements Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("선수 번호 : %d, 팀 번호 : %d, 선수 이름 : %s, 등번호 : %s, 포지션 : %s, 슈팅 : %d, 패스 : %d, 수비 : %d, 가격 : %d",
-				pNo, cNo, pName, pUniformNo, pPosition, pSho, pPas, pDef, pPrice);
+		return String.format(
+				"선수 번호 : %d, 소속 팀 이름 : %s, 선수 이름 : %s, 등번호 : %s, 포지션 : %s, 슈팅 : %d, 패스 : %d, 수비 : %d, 가격 : %d\n",
+				pNo, cName, pName, pUniformNo, pPosition, pSho, pPas, pDef, pPrice);
 	}
 
 }

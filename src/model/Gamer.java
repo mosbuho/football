@@ -5,29 +5,31 @@ import java.io.Serializable;
 public class Gamer implements Serializable {
 	private int gNo;
 	private int cNo;
+	private String cName;
 	private String gId;
 	private String gPw;
 	private String gSessionId;
 	private int gIsAdmin;
 	private int gBalance;
-	private int gGkCount;
-	private int gDfCount;
-	private int gMfCount;
-	private int gFwCount;
+	private int gPoint;
 
-	public Gamer(int gNo, int cNo, String gId, String gPw, String gSessionId, int gIsAdmin, int gBalance,
-			int gGkCount, int gDfCount, int gMfCount, int gFwCount) {
+	public Gamer(String gId, String cName, int gPoint) {
+		this.gId = gId;
+		this.cName = cName;
+		this.gPoint = gPoint;
+	}
+
+	public Gamer(int gNo, int cNo, String cName, String gId, String gPw, String gSessionId, int gIsAdmin, int gBalance,
+			int gPoint) {
 		this.gNo = gNo;
 		this.cNo = cNo;
+		this.cName = cName;
 		this.gId = gId;
 		this.gPw = gPw;
 		this.gSessionId = gSessionId;
 		this.gIsAdmin = gIsAdmin;
 		this.gBalance = gBalance;
-		this.gGkCount = gGkCount;
-		this.gDfCount = gDfCount;
-		this.gMfCount = gMfCount;
-		this.gFwCount = gFwCount;
+		this.gPoint = gPoint;
 	}
 
 	public int getgNo() {
@@ -70,7 +72,7 @@ public class Gamer implements Serializable {
 		this.gSessionId = gSessionId;
 	}
 
-	public int isgIsAdmin() {
+	public int getgIsAdmin() {
 		return gIsAdmin;
 	}
 
@@ -86,42 +88,16 @@ public class Gamer implements Serializable {
 		this.gBalance = gBalance;
 	}
 
-	public int getgGkCount() {
-		return gGkCount;
+	public int getgPoint() {
+		return gPoint;
 	}
 
-	public void setgGkCount(int gGkCount) {
-		this.gGkCount = gGkCount;
-	}
-
-	public int getgDfCount() {
-		return gDfCount;
-	}
-
-	public void setgDfCount(int gDfCount) {
-		this.gDfCount = gDfCount;
-	}
-
-	public int getgMfCount() {
-		return gMfCount;
-	}
-
-	public void setgMfCount(int gMfCount) {
-		this.gMfCount = gMfCount;
-	}
-
-	public int getgFwCount() {
-		return gFwCount;
-	}
-
-	public void setgFwCount(int gFwCount) {
-		this.gFwCount = gFwCount;
+	public void setgPoint(int gPoint) {
+		this.gPoint = gPoint;
 	}
 
 	@Override
 	public String toString() {
-		return String.format(
-				"gNo=%d, cNo=%d, gId=%s, gPw=%s, gSessionId=%s, gIsAdmin=%d, gBalance=%d, gGkCount=%d, gDfCount=%d, gMfCount=%d, gFwCount=%d",
-				gNo, cNo, gId, gPw, gSessionId, gIsAdmin, gBalance, gGkCount, gDfCount, gMfCount, gFwCount);
+		return String.format("아이디 : %s, 소속 팀 : %s, 승점 : %d\n", gId, cName, gPoint);
 	}
 }
