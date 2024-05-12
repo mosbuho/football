@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import controller.Club.ClubManager;
+import model.Club;
+
 public class OwnerDAO {
 
     public static void initPlayer(Connection con, ResultSet rs, int cNo) {
@@ -41,5 +44,18 @@ public class OwnerDAO {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static void getGamerPlayer(Connection con, int gNo, Club club) {
+        try (PreparedStatement pstmt = con
+                .prepareStatement("SELECT * FROM OWNER O INNER JOIN PLAYER P ON O.P_NO = P.P_NO WHERE O.G_NO = ?")) {
+            pstmt.setInt(1, gNo);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                ClubManager.addPlayerToClub(club, rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -191,10 +191,7 @@ public class GamerDAO {
     public static Club getMyClubInfo(String sessionId) {
         Club club = null;
         try (Connection con = connectDB.getConnection();
-                PreparedStatement pstmt = con.prepareStatement(
-                        "SELECT G.G_NO, G_BALANCE, C.C_NO, C.C_NAME FROM GAMER G INNER JOIN CLUB C ON G.C_NO = C.C_NO WHERE G_SESSIONID = ?");
-                PreparedStatement pstmt2 = con.prepareStatement(
-                        "SELECT * FROM OWNER O INNER JOIN PLAYER P ON O.P_NO = P.P_NO WHERE O.G_NO = ?")) {
+                PreparedStatement pstmt = con.prepareStatement("SELECT G.G_NO, G_BALANCE, C.C_NO, C.C_NAME FROM GAMER G INNER JOIN CLUB C ON G.C_NO = C.C_NO WHERE G_SESSIONID = ?");) {
             pstmt.setString(1, sessionId);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
@@ -202,11 +199,7 @@ public class GamerDAO {
                 String cName = rs.getString("C_NAME");
                 int gBalance = rs.getInt("G_BALANCE");
                 club = new Club(cNo, cName, gBalance);
-                pstmt2.setInt(1, rs.getInt("G_NO"));
-                ResultSet rs2 = pstmt2.executeQuery();
-                while (rs2.next()) {
-                    ClubManager.addPlayerToClub(club, rs2);
-                }
+                OwnerDAO.getGamerPlayer(con, rs.getInt("G_NO"), club);
             }
         } catch (SQLException e) {
             e.printStackTrace();
