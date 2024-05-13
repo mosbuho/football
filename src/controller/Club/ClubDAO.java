@@ -20,8 +20,9 @@ public class ClubDAO {
                 ResultSet rs = pstmt.executeQuery();) {
             Map<Integer, Club> clubMap = new HashMap<>();
             Club club = null;
+            int cNo = 0;
             while (rs.next()) {
-                int cNo = rs.getInt("C_NO");
+                cNo = rs.getInt("C_NO");
                 club = clubMap.get(cNo);
                 if (club == null) {
                     club = new Club(cNo, rs.getString("C_NAME"));
