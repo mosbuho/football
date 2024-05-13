@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import controller.OwnerDAO;
 import model.Club;
 import model.Gamer;
 
@@ -44,7 +45,7 @@ public class GamerManager {
     public static void dropPlayer(BufferedReader br, PrintWriter pw) {
         try {
             String data = br.readLine();
-            int result = GamerDAO.dropPlayer(data);
+            int result = OwnerDAO.dropPlayer(data);
             String response = (result != 0) ? "방출 성공" : "방출 실패";
             pw.println(response);
         } catch (IOException e) {
@@ -77,7 +78,7 @@ public class GamerManager {
     public static void getMyClubInfo(BufferedReader br, PrintWriter pw, ObjectOutputStream oos) {
         try {
             String sessionId = br.readLine();
-            Club club = GamerDAO.getMyClubInfo(sessionId);
+            Club club = OwnerDAO.getMyClubInfo(sessionId);
             oos.writeObject(club);
         } catch (IOException e) {
             e.printStackTrace();

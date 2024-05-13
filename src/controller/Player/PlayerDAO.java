@@ -29,17 +29,4 @@ public class PlayerDAO {
         }
         return playerList;
     }
-
-    public static int getPlayerPrice(int pNo, Connection con) {
-        try (PreparedStatement pstmt = con.prepareStatement("SELECT P_PRICE FROM PLAYER WHERE P_NO = ?")) {
-            pstmt.setInt(1, pNo);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("P_PRICE");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
 }

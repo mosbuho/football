@@ -20,9 +20,8 @@ public class ClubManager {
     }
 
     public static void addPlayerToClub(Club club, ResultSet rs) {
-        Player player;
         try {
-            player = new Player(rs.getInt("P_NO"), club.getcNo(), club.getcName(), rs.getString("P_NAME"),
+            Player player = new Player(rs.getInt("P_NO"), club.getcNo(), club.getcName(), rs.getString("P_NAME"),
                     rs.getString("P_UNIFORM_NO"),
                     rs.getString("P_POSITION"), rs.getInt("P_SHO"), rs.getInt("P_PAS"), rs.getInt("P_DEF"),
                     rs.getInt("P_PRICE"));

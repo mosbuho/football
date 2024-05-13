@@ -19,12 +19,12 @@ public class ClubDAO {
                         .prepareStatement("SELECT * FROM CLUB C INNER JOIN PLAYER P ON C.C_NO = P.C_NO");
                 ResultSet rs = pstmt.executeQuery();) {
             Map<Integer, Club> clubMap = new HashMap<>();
+            Club club = null;
             while (rs.next()) {
                 int cNo = rs.getInt("C_NO");
-                String cName = rs.getString("C_NAME");
-                Club club = clubMap.get(cNo);
+                club = clubMap.get(cNo);
                 if (club == null) {
-                    club = new Club(cNo, cName);
+                    club = new Club(cNo, rs.getString("C_NAME"));
                     clubMap.put(cNo, club);
                 }
                 ClubManager.addPlayerToClub(club, rs);
