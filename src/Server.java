@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import controller.Club.ClubManager;
+import controller.GamePlay.GamePlayManager;
 import controller.Gamer.GamerManager;
 import controller.Player.PlayerManager;
 
@@ -63,6 +64,12 @@ public class Server {
                     case "buyPlayer":
                         GamerManager.buyPlayer(br, pw);
                         break;
+                    case "ready":
+                        GamePlayManager.ready(br, pw, cs);
+                        break;
+                    case "play":
+                        GamePlayManager.play(br, pw);
+                        break;
                     case "createClub":
                         ClubManager.createClub(br, pw);
                         break;
@@ -87,6 +94,8 @@ public class Server {
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

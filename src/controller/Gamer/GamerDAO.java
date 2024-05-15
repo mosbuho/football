@@ -176,4 +176,16 @@ public class GamerDAO {
         }
         return club;
     }
+
+    public static void updatePoint(String winnerSessionId) {
+        try {
+            Connection con = connectDB.getConnection();
+            PreparedStatement pstmt = con
+                    .prepareStatement("UPDATE GAMER SET G_POINT = G_POINT + 1 WHERE G_SESSIONID = ?");
+            pstmt.setString(1, winnerSessionId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

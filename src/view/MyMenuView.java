@@ -30,9 +30,6 @@ public class MyMenuView {
                     GamerView.buyPlayer(input, sessionId, pw, br, ois);
                     break;
                 case 5:
-                    // 플레이
-                    break;
-                case 6:
                     return;
                 default:
                     System.out.println("올바른 값 입력");

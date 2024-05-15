@@ -20,9 +20,10 @@ public class PrintView {
         System.out.println("|\t2. 선수 목록\t|");
         System.out.println("|\t3. 순위\t\t|");
         System.out.println("|\t4. 내 팀 관리\t|");
-        System.out.println("|\t5. 플레이\t|");
-        System.out.println("|\t6. 관리자\t|");
-        System.out.println("|\t7. 종료\t\t|");
+        System.out.println("|\t5. 레디\t\t|");
+        System.out.println("|\t6. 플레이\t|");
+        System.out.println("|\t7. 관리자\t|");
+        System.out.println("|\t8. 종료\t\t|");
         System.out.println("-------------------------");
         System.out.print("메뉴 입력 : ");
     }
@@ -35,8 +36,7 @@ public class PrintView {
         System.out.println("|\t2. 선수 방출\t|");
         System.out.println("|\t3. 선수 판매\t|");
         System.out.println("|\t4. 선수 영입\t|");
-        System.out.println("|\t5. 플레이\t|");
-        System.out.println("|\t6. 메인 메뉴\t|");
+        System.out.println("|\t5. 메인 메뉴\t|");
         System.out.println("-------------------------");
         System.out.print("메뉴 입력 : ");
     }

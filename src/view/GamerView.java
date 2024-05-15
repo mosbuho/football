@@ -126,4 +126,17 @@ public class GamerView {
             e.printStackTrace();
         }
     }
+
+    public static Club getMyPlayerList(BufferedReader input, String sessionId, PrintWriter pw, BufferedReader br,
+            ObjectInputStream ois) {
+        Club club = null;
+        pw.println("getMyClubInfo");
+        pw.println(sessionId);
+        try {
+            club = (Club) ois.readObject();
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        }
+        return club;
+    }
 }

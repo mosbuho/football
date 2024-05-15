@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 import model.Session;
 import view.AdminView;
 import view.ClubView;
+import view.GamePlayView;
 import view.GamerView;
 import view.PrintView;
 import view.MyMenuView;
@@ -68,12 +69,15 @@ public class Client {
                             MyMenuView.myClubMenu(pw, br, input, ois, session.getSessionId());
                             break;
                         case 5:
-                            // 플레이
+                            GamePlayView.ready(pw, br, input, ois, session.getSessionId());
                             break;
                         case 6:
-                            AdminView.adminMenu(pw, br, input, ois, session.getSessionId(), session.isAdmin());
+                            GamePlayView.play(pw, br, input, ois, session.getSessionId());
                             break;
                         case 7:
+                            AdminView.adminMenu(pw, br, input, ois, session.getSessionId(), session.isAdmin());
+                            break;
+                        case 8:
                             GamerView.logout(pw, session.getSessionId());
                             return;
                         default:
