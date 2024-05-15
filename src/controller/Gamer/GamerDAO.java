@@ -122,14 +122,16 @@ public class GamerDAO {
         String sessionId = temp[1];
         int result = 0;
         Connection con = connectDB.getConnection();
-        try (PreparedStatement pstmt = con.prepareStatement(
-                "UPDATE GAMER SET G_BALANCE = G_BALANCE + (SELECT P_PRICE FROM PLAYER WHERE P_NO = ?) WHERE G_SESSIONID = ?")) {
-            pstmt.setInt(1, pNo);
-            pstmt.setString(2, sessionId);
-            result = pstmt.executeUpdate();
-            OwnerDAO.dropPlayer(data);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        result = OwnerDAO.dropPlayer(data);
+        if (result == 1) {
+            try (PreparedStatement pstmt = con.prepareStatement(
+                    "UPDATE GAMER SET G_BALANCE = G_BALANCE + NVL((SELECT P_PRICE FROM PLAYER WHERE P_NO = ?), 0) WHERE G_SESSIONID = ?")) {
+                pstmt.setInt(1, pNo);
+                pstmt.setString(2, sessionId);
+                result = pstmt.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
@@ -141,13 +143,13 @@ public class GamerDAO {
         int result = 0;
         Connection con = connectDB.getConnection();
         try (PreparedStatement pstmt = con.prepareStatement(
-                "UPDATE GAMER SET G_BALANCE = G_BALANCE - (SELECT P_PRICE FROM PLAYER WHERE P_NO = ?) WHERE G_SESSIONID = ?")) {
+                "UPDATE GAMER SET G_BALANCE = G_BALANCE - NVL((SELECT P_PRICE FROM PLAYER WHERE P_NO = ?), 99999999) WHERE G_SESSIONID = ?")) {
             pstmt.setInt(1, pNo);
             pstmt.setString(2, sessionId);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                OwnerDAO.insertPlayer(data);
-                result = pstmt.executeUpdate();
+            result = pstmt.executeUpdate();
+            System.out.println(result);
+            if (result == 1) {
+                result = OwnerDAO.insertPlayer(data);
             }
         } catch (SQLException e) {
             e.printStackTrace();
