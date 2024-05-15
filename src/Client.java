@@ -7,9 +7,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import model.Session;
+import view.AdminView;
 import view.ClubView;
 import view.GamerView;
-import view.MainView;
+import view.PrintView;
+import view.MyMenuView;
 import view.PlayerView;
 
 public class Client {
@@ -27,7 +29,7 @@ public class Client {
             while (true) {
                 menu = 0;
                 if (!session.isLoggedIn()) {
-                    MainView.printMainMenu();
+                    PrintView.printMainMenu();
                     try {
                         menu = Integer.parseInt(input.readLine());
                     } catch (NumberFormatException | IOException e) {
@@ -47,7 +49,7 @@ public class Client {
                             break;
                     }
                 } else {
-                    MainView.printLoggedInMainMenu();
+                    PrintView.printLoggedInMainMenu();
                     try {
                         menu = Integer.parseInt(input.readLine());
                     } catch (NumberFormatException | IOException e) {
@@ -63,11 +65,15 @@ public class Client {
                             GamerView.getGamerList(pw, ois);
                             break;
                         case 4:
-                            MainView.myClubMenu(pw, br, input, ois, session.getSessionId());
+                            MyMenuView.myClubMenu(pw, br, input, ois, session.getSessionId());
                             break;
                         case 5:
+                            // 플레이
                             break;
                         case 6:
+                            AdminView.adminMenu(pw, br, input, ois, session.getSessionId(), session.isAdmin());
+                            break;
+                        case 7:
                             GamerView.logout(pw, session.getSessionId());
                             return;
                         default:

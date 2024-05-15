@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import controller.OwnerDAO;
+import controller.Club.ClubManager;
 import controller.db.connectDB;
 import model.Club;
 import model.Gamer;
@@ -17,8 +18,8 @@ public class GamerDAO {
         ArrayList<Gamer> gamerList = new ArrayList<>();
         try (Connection con = connectDB.getConnection();
                 PreparedStatement pstmt = con.prepareStatement(
-                        "SELECT G.G_ID, C.C_NAME, G.G_POINT FROM GAMER G INNER JOIN CLUB C ON G.C_NO = C.C_NO ORDER BY G_POINT");
-                ResultSet rs = pstmt.executeQuery();) {
+                        "SELECT G.G_ID, C.C_NAME, G.G_POINT FROM GAMER G LEFT JOIN CLUB C ON G.C_NO = C.C_NO ORDER BY G_POINT");) {
+            ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Gamer gamer = new Gamer(rs.getString("G_ID"), rs.getString("C_NAME"), rs.getInt("G_POINT"));
                 gamerList.add(gamer);
@@ -89,6 +90,21 @@ public class GamerDAO {
         return newSessionId;
     }
 
+    public static int checkIsAdmin(String sessionId) {
+        int isAdmin = 0;
+        try (Connection con = connectDB.getConnection();
+                PreparedStatement pstmt = con.prepareStatement("SELECT G_ISADMIN FROM GAMER WHERE G_SESSIONID = ?")) {
+            pstmt.setString(1, sessionId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                isAdmin = rs.getInt("G_ISADMIN");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return isAdmin;
+    }
+
     public static void logout(String data) {
         try (Connection con = connectDB.getConnection();
                 PreparedStatement pstmt = con
@@ -137,5 +153,25 @@ public class GamerDAO {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static Club getMyClubInfo(String sessionId) {
+        Club club = null;
+        try (Connection con = connectDB.getConnection();
+                PreparedStatement pstmt = con.prepareStatement(
+                        "SELECT G.G_NO, G.G_BALANCE, C.C_NO, NVL(C.C_NAME, '무소속') AS C_NAME, P.P_NO, P.P_NAME, P.P_UNIFORM_NO, P.P_POSITION, P.P_SHO, P.P_PAS, P.P_DEF, P.P_PRICE "
+                                + "FROM GAMER G LEFT JOIN CLUB C ON G.C_NO = C.C_NO INNER JOIN OWNER O ON G.G_NO = O.G_NO INNER JOIN PLAYER P ON O.P_NO = P.P_NO WHERE G_SESSIONID = ?")) {
+            pstmt.setString(1, sessionId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                if (club == null) {
+                    club = new Club(rs.getInt("C_NO"), rs.getString("C_NAME"), rs.getInt("G_BALANCE"));
+                }
+                ClubManager.addPlayerToClub(club, rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return club;
     }
 }

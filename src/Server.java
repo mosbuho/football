@@ -63,6 +63,24 @@ public class Server {
                     case "buyPlayer":
                         GamerManager.buyPlayer(br, pw);
                         break;
+                    case "createClub":
+                        ClubManager.createClub(br, pw);
+                        break;
+                    case "deleteClub":
+                        ClubManager.deleteClub(br, pw);
+                        break;
+                    case "updateClub":
+                        ClubManager.updateClub(br, pw);
+                        break;
+                    case "createPlayer":
+                        PlayerManager.createPlayer(br, pw);
+                        break;
+                    case "updatePlayer":
+                        PlayerManager.updatePlayer(br, pw);
+                        break;
+                    case "deletePlayer":
+                        PlayerManager.deletePlayer(br, pw);
+                        break;
                     case "logout":
                         GamerManager.logout(br, pw);
                         break;

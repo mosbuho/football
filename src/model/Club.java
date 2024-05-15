@@ -60,7 +60,7 @@ public class Club implements Serializable {
 
 	public String toStringWithBalance() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format("팀 이름: %s, 자산 : %d\n", cName, gBalance));
+		sb.append(String.format("팀 번호 : %d, 팀 이름: %s, 자산 : %d\n", cNo, cName, gBalance));
 		for (Player player : playerList) {
 			sb.append(player);
 		}
@@ -70,7 +70,7 @@ public class Club implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format("팀 이름: %s\n", cName));
+		sb.append(String.format("팀 번호 : %d, 팀 이름: %s\n", cNo, cName));
 		for (Player player : playerList) {
 			sb.append(player);
 		}

@@ -36,4 +36,41 @@ public class ClubDAO {
         }
         return clubList;
     }
+
+    public static int createClub(String cName) {
+        int result = 0;
+        try (Connection con = connectDB.getConnection();
+                PreparedStatement pstmt = con.prepareStatement("INSERT INTO CLUB(C_NAME) VALUES(?)")) {
+            pstmt.setString(1, cName);
+            result = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static int deleteClub(int cNo) {
+        int result = 0;
+        try (Connection con = connectDB.getConnection();
+                PreparedStatement pstmt = con.prepareStatement("DELETE FROM CLUB WHERE C_NO = ?")) {
+            pstmt.setInt(1, cNo);
+            result = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static int updateClub(int cNo, String cName) {
+        int result = 0;
+        try (Connection con = connectDB.getConnection();
+                PreparedStatement pstmt = con.prepareStatement("UPDATE CLUB SET C_NAME = ? WHERE C_NO = ?")) {
+            pstmt.setString(1, cName);
+            pstmt.setInt(2, cNo);
+            result = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

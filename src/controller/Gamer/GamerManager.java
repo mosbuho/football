@@ -78,7 +78,7 @@ public class GamerManager {
     public static void getMyClubInfo(BufferedReader br, PrintWriter pw, ObjectOutputStream oos) {
         try {
             String sessionId = br.readLine();
-            Club club = OwnerDAO.getMyClubInfo(sessionId);
+            Club club = GamerDAO.getMyClubInfo(sessionId);
             oos.writeObject(club);
         } catch (IOException e) {
             e.printStackTrace();

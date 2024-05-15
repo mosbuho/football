@@ -1,11 +1,6 @@
 package view;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.PrintWriter;
-
-public class MainView {
+public class PrintView {
     public static void printMainMenu() {
         System.out.println("-------------------------");
         System.out.println("|\tMINIFOOTBALL\t|");
@@ -26,7 +21,8 @@ public class MainView {
         System.out.println("|\t3. 순위\t\t|");
         System.out.println("|\t4. 내 팀 관리\t|");
         System.out.println("|\t5. 플레이\t|");
-        System.out.println("|\t6. 종료\t\t|");
+        System.out.println("|\t6. 관리자\t|");
+        System.out.println("|\t7. 종료\t\t|");
         System.out.println("-------------------------");
         System.out.print("메뉴 입력 : ");
     }
@@ -45,35 +41,18 @@ public class MainView {
         System.out.print("메뉴 입력 : ");
     }
 
-    public static void myClubMenu(PrintWriter pw, BufferedReader br, BufferedReader input, ObjectInputStream ois, String sessionId) {
-        int menu = 0;
-        while (true) {
-            menu = 0;
-            MainView.printMyClubMenu();
-            try {menu = Integer.parseInt(input.readLine());} 
-            catch (NumberFormatException | IOException e) {}
-            switch (menu) {
-                case 1:
-                    GamerView.getMyClubInfo(input, sessionId, pw, br, ois);
-                break;
-                case 2:
-                    GamerView.dropPlayer(input, sessionId, pw, br, ois);
-                    break;
-                case 3:
-                    GamerView.sellPlayer(input, sessionId, pw, br, ois);
-                    break;
-                case 4:
-                    GamerView.buyPlayer(input, sessionId, pw, br, ois);
-                    break;
-                case 5:
-                    // 플레이
-                    break;
-                case 6:
-                    return;
-                default:
-                    System.out.println("올바른 값 입력");
-                    break;
-            }
-        }
+    public static void printAdminMenu() {
+        System.out.println("-------------------------");
+        System.out.println("|\tMINIFOOTBALL\t|");
+        System.out.println("-------------------------");
+        System.out.println("|\t1. 팀 생성\t|");
+        System.out.println("|\t2. 팀 변경\t|");
+        System.out.println("|\t3. 팀 삭제\t|");
+        System.out.println("|\t4. 선수 생성\t|");
+        System.out.println("|\t5. 선수 변경\t|");
+        System.out.println("|\t6. 선수 삭제\t|");
+        System.out.println("|\t7. 메인 메뉴\t|");
+        System.out.println("-------------------------");
+        System.out.print("메뉴 입력 : ");
     }
 }
