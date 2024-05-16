@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 
-public class Player implements Serializable {
+public class Player implements Comparable<Player>, Serializable {
 	private int pNo;
 	private int cNo;
 	private String cName;
@@ -132,6 +132,11 @@ public class Player implements Serializable {
 
 	public void setpPrice(int pPrice) {
 		this.pPrice = pPrice;
+	}
+
+	@Override
+	public int compareTo(Player o) {
+		return this.index - o.index;
 	}
 
 	@Override
