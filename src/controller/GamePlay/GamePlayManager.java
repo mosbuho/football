@@ -185,12 +185,14 @@ public class GamePlayManager {
                                     sho_words[random.nextInt(sho_words.length)]));
                             score.put(playerA ? playerAa : playerBb,
                                     score.getOrDefault(playerA ? playerAa : playerBb, 0) + 1);
+                            broadcastMessage((String.format("A %s : B %s", score.getOrDefault(playerAa, 0),
+                                    score.getOrDefault(playerBb, 0))));
                             inGameTurn = 0;
                             round++;
                             turn.set(!turn.get());
                         } else {
                             broadcastMessage(String.format("%s의 %s", att.getpName(),
-                            sho_words[random.nextInt(sho_words.length)]));
+                                    sho_words[random.nextInt(sho_words.length)]));
                             broadcastMessage(String.format("%s의 %s", def.getpName(),
                                     def_words[random.nextInt(def_words.length)]));
                             inGameTurn = 0;
@@ -207,7 +209,7 @@ public class GamePlayManager {
         int scoreA = score.getOrDefault(playerAa, 0);
         int scoreB = score.getOrDefault(playerBb, 0);
         if (scoreA > scoreB) {
-            pw.println(String.format("A %s : B %s A 승리", scoreA, scoreB));
+            broadcastMessage(String.format("A %s : B %s A 승리", scoreA, scoreB));
             String winnerSessionId = null;
             for (Map.Entry<String, String> entry : gamingUserSA.entrySet()) {
                 if (entry.getValue().equals(playerAa)) {
@@ -217,9 +219,9 @@ public class GamePlayManager {
                 }
             }
         } else if (scoreA < scoreB) {
-            pw.println(String.format("A %s : B %s B 승리", scoreA, scoreB));
+            broadcastMessage(String.format("A %s : B %s B 승리", scoreA, scoreB));
         } else {
-            pw.println(String.format("A %s : B %s 동점", scoreA, scoreB));
+            broadcastMessage(String.format("A %s : B %s 동점", scoreA, scoreB));
         }
         pw.println("게임 종료");
         gamingUserSA.clear();
