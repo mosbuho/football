@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import controller.Player.PlayerManager;
 import controller.db.connectDB;
 import model.Player;
 

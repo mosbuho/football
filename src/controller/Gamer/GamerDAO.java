@@ -18,7 +18,7 @@ public class GamerDAO {
         ArrayList<Gamer> gamerList = new ArrayList<>();
         try (Connection con = connectDB.getConnection();
                 PreparedStatement pstmt = con.prepareStatement(
-                        "SELECT G.G_ID, C.C_NAME, G.G_POINT FROM GAMER G LEFT JOIN CLUB C ON G.C_NO = C.C_NO ORDER BY G_POINT");) {
+                        "SELECT G.G_ID, C.C_NAME, G.G_POINT FROM GAMER G LEFT JOIN CLUB C ON G.C_NO = C.C_NO ORDER BY G_POINT DESC");) {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 Gamer gamer = new Gamer(rs.getString("G_ID"), rs.getString("C_NAME"), rs.getInt("G_POINT"));
