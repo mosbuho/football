@@ -1,11 +1,13 @@
 package controller.Player;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 import controller.db.connectDB;
 import model.Player;
@@ -39,23 +41,21 @@ public class PlayerDAO {
     public static int createPlayer(int cNo, String pName, int pUniformNo, String pPosition, int pSho, int pPas,
             int pDef, int pPrice) {
         int result = 0;
-        try (Connection con = connectDB.getConnection();
-                PreparedStatement pstmt = con
-                        .prepareStatement(
-                                "INSERT INTO PLAYER (C_NO, P_NAME, P_UNIFORM_NO, P_POSITION, P_SHO, P_PAS, P_DEF, P_PRICE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");) {
+        try (Connection con = connectDB.getConnection()) {
+            CallableStatement cstmt = con.prepareCall("{CALL INSERTPLAYER(?, ?, ?, ?, ?, ?, ?, ?)}");
             if (cNo == 0) {
-                pstmt.setNull(1, Types.INTEGER);
+                cstmt.setNull(1, Types.INTEGER);
             } else {
-                pstmt.setInt(1, cNo);
+                cstmt.setInt(1, cNo);
             }
-            pstmt.setString(2, pName);
-            pstmt.setInt(3, pUniformNo);
-            pstmt.setString(4, pPosition);
-            pstmt.setInt(5, pSho);
-            pstmt.setInt(6, pPas);
-            pstmt.setInt(7, pDef);
-            pstmt.setInt(8, pPrice);
-            result = pstmt.executeUpdate();
+            cstmt.setString(2, pName);
+            cstmt.setInt(3, pUniformNo);
+            cstmt.setString(4, pPosition);
+            cstmt.setInt(5, pSho);
+            cstmt.setInt(6, pPas);
+            cstmt.setInt(7, pDef);
+            cstmt.setInt(8, pPrice);
+            result = cstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,10 +64,10 @@ public class PlayerDAO {
 
     public static int deletePlayer(int pNo) {
         int result = 0;
-        try (Connection con = connectDB.getConnection();
-                PreparedStatement pstmt = con.prepareStatement("DELETE FROM PLAYER WHERE P_NO = ?")) {
-            pstmt.setInt(1, pNo);
-            result = pstmt.executeUpdate();
+        try (Connection con = connectDB.getConnection()) {
+            CallableStatement cstmt = con.prepareCall("{CALL DELETEPLAYER(?)}");
+            cstmt.setInt(1, pNo);
+            result = cstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -77,24 +77,22 @@ public class PlayerDAO {
     public static int updatePlayer(int pNo, int cNo, String pName, int pUniformNo, String pPosition, int pSho, int pPas,
             int pDef, int pPrice) {
         int result = 0;
-        try (Connection con = connectDB.getConnection();
-                PreparedStatement pstmt = con
-                        .prepareStatement(
-                                "UPDATE PLAYER SET C_NO = ?, P_NAME = ?, P_UNIFORM_NO = ?, P_POSITION = ?, P_SHO = ?, P_PAS = ?, P_DEF = ?, P_PRICE = ? WHERE P_NO = ?");) {
+        try (Connection con = connectDB.getConnection()) {
+            CallableStatement cstmt = con.prepareCall("{CALL UPDATEPLAYER(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
             if (cNo == 0) {
-                pstmt.setNull(1, Types.INTEGER);
+                cstmt.setNull(1, Types.INTEGER);
             } else {
-                pstmt.setInt(1, cNo);
+                cstmt.setInt(1, cNo);
             }
-            pstmt.setString(2, pName);
-            pstmt.setInt(3, pUniformNo);
-            pstmt.setString(4, pPosition);
-            pstmt.setInt(5, pSho);
-            pstmt.setInt(6, pPas);
-            pstmt.setInt(7, pDef);
-            pstmt.setInt(8, pPrice);
-            pstmt.setInt(9, pNo);
-            result = pstmt.executeUpdate();
+            cstmt.setString(2, pName);
+            cstmt.setInt(3, pUniformNo);
+            cstmt.setString(4, pPosition);
+            cstmt.setInt(5, pSho);
+            cstmt.setInt(6, pPas);
+            cstmt.setInt(7, pDef);
+            cstmt.setInt(8, pPrice);
+            cstmt.setInt(9, pNo);
+            result = cstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
