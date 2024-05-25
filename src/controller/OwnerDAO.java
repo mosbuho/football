@@ -1,55 +1,45 @@
 package controller;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 
 import controller.db.connectDB;
 import model.Player;
 
 public class OwnerDAO {
-
-    public static void initPlayer(Connection con, int gNo, int cNo) {
-        try (PreparedStatement pstmt = con
-                .prepareStatement("INSERT INTO OWNER(G_NO, P_NO) SELECT ?, P_NO FROM PLAYER WHERE C_NO = ?")) {
-            pstmt.setInt(1, gNo);
-            pstmt.setInt(2, cNo);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static int dropPlayer(String data) {
+    public static int sellPlayer(String data) {
         String[] temp = data.split("\\|");
         int pNo = Integer.parseInt(temp[0]);
         String sessionId = temp[1];
         int result = 0;
-        try (Connection con = connectDB.getConnection();
-                PreparedStatement pstmt = con.prepareStatement(
-                        "DELETE FROM OWNER WHERE G_NO = (SELECT G_NO FROM GAMER WHERE G_SESSIONID = ?) AND P_NO = ?")) {
-            pstmt.setString(1, sessionId);
-            pstmt.setInt(2, pNo);
-            result = pstmt.executeUpdate();
+        try (Connection con = connectDB.getConnection()) {
+            CallableStatement cstmt = con.prepareCall("{CALL SELLPLAYER(?, ?, ?)}");
+            cstmt.setString(1, sessionId);
+            cstmt.setInt(2, pNo);
+            cstmt.registerOutParameter(3, Types.INTEGER);
+            cstmt.executeUpdate();
+            result = cstmt.getInt(3);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;
     }
 
-    public static int insertPlayer(String data) {
+    public static int buyPlayer(String data) {
         String[] temp = data.split("\\|");
         int pNo = Integer.parseInt(temp[0]);
         String sessionId = temp[1];
         int result = 0;
-        try (Connection con = connectDB.getConnection();
-                PreparedStatement pstmt = con.prepareStatement(
-                        "INSERT INTO OWNER VALUES((SELECT G_NO FROM GAMER WHERE G_SESSIONID = ?), ?)")) {
-            pstmt.setString(1, sessionId);
-            pstmt.setInt(2, pNo);
-            result = pstmt.executeUpdate();
+        try (Connection con = connectDB.getConnection()) {
+            CallableStatement cstmt = con.prepareCall("{CALL BUYPLAYER(?, ?)}");
+            cstmt.setString(1, sessionId);
+            cstmt.setInt(2, pNo);
+            result = cstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -59,10 +49,10 @@ public class OwnerDAO {
     public static ArrayList<Player> getGamerPlayers(String data) {
         String[] temp = data.split("\\|");
         ArrayList<Player> playerList = new ArrayList<>();
-        try (Connection con = connectDB.getConnection();
-                PreparedStatement pstmt = con.prepareStatement(
-                        "SELECT P.P_NO, P_NAME, P_UNIFORM_NO, P_POSITION, P_SHO, P_PAS, P_DEF FROM OWNER O INNER JOIN PLAYER P ON O.P_NO = P.P_NO "
-                                + "WHERE G_NO = (SELECT G_NO FROM GAMER WHERE G_SESSIONID = ?) AND O.P_NO IN (?,?,?,?,?,?,?,?,?,?,?)")) {
+        try (Connection con = connectDB.getConnection()) {
+            PreparedStatement pstmt = con.prepareStatement(
+                    "SELECT P.P_NO, P_NAME, P_UNIFORM_NO, P_POSITION, P_SHO, P_PAS, P_DEF FROM OWNER O INNER JOIN PLAYER P ON O.P_NO = P.P_NO "
+                            + "WHERE G_NO = (SELECT G_NO FROM GAMER WHERE G_SESSIONID = ?) AND O.P_NO IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             pstmt.setString(1, temp[0]);
             pstmt.setInt(2, Integer.parseInt(temp[1]));
             pstmt.setInt(3, Integer.parseInt(temp[2]));

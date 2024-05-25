@@ -42,21 +42,10 @@ public class GamerManager {
         }
     }
 
-    public static void dropPlayer(BufferedReader br, PrintWriter pw) {
-        try {
-            String data = br.readLine();
-            int result = OwnerDAO.dropPlayer(data);
-            String response = (result != 0) ? "방출 성공" : "방출 실패";
-            pw.println(response);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void sellPlayer(BufferedReader br, PrintWriter pw) {
         try {
             String data = br.readLine();
-            int result = GamerDAO.sellPlayer(data);
+            int result = OwnerDAO.sellPlayer(data);
             String response = (result != 0) ? "판매 성공" : "판매 실패";
             pw.println(response);
         } catch (IOException e) {
@@ -67,7 +56,7 @@ public class GamerManager {
     public static void buyPlayer(BufferedReader br, PrintWriter pw) {
         try {
             String data = br.readLine();
-            int result = GamerDAO.buyPlayer(data);
+            int result = OwnerDAO.buyPlayer(data);
             String response = (result != 0) ? "영입 성공" : "영입 실패";
             pw.println(response);
         } catch (IOException e) {

@@ -33,10 +33,9 @@ public class PrintView {
         System.out.println("|\tMINIFOOTBALL\t|");
         System.out.println("-------------------------");
         System.out.println("|\t1. 내 팀 정보\t|");
-        System.out.println("|\t2. 선수 방출\t|");
-        System.out.println("|\t3. 선수 판매\t|");
-        System.out.println("|\t4. 선수 영입\t|");
-        System.out.println("|\t5. 메인 메뉴\t|");
+        System.out.println("|\t2. 선수 판매\t|");
+        System.out.println("|\t3. 선수 영입\t|");
+        System.out.println("|\t4. 메인 메뉴\t|");
         System.out.println("-------------------------");
         System.out.print("메뉴 입력 : ");
     }

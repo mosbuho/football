@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.concurrent.Callable;
 
 import controller.db.connectDB;
 import model.Player;
@@ -16,9 +15,9 @@ public class PlayerDAO {
 
     public static ArrayList<Player> getPlayerList() {
         ArrayList<Player> playerList = new ArrayList<>();
-        try (Connection con = connectDB.getConnection();
-                PreparedStatement pstmt = con
-                        .prepareStatement("SELECT * FROM PLAYER P LEFT JOIN CLUB C ON C.C_NO = P.C_NO");) {
+        try (Connection con = connectDB.getConnection()) {
+            PreparedStatement pstmt = con
+                    .prepareStatement("SELECT * FROM PLAYER P LEFT JOIN CLUB C ON C.C_NO = P.C_NO");
             ResultSet rs = pstmt.executeQuery();
             String cName = null;
             while (rs.next()) {

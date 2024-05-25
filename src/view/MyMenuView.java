@@ -21,15 +21,12 @@ public class MyMenuView {
                     GamerView.getMyClubInfo(input, sessionId, pw, br, ois);
                     break;
                 case 2:
-                    GamerView.dropPlayer(input, sessionId, pw, br, ois);
-                    break;
-                case 3:
                     GamerView.sellPlayer(input, sessionId, pw, br, ois);
                     break;
-                case 4:
+                case 3:
                     GamerView.buyPlayer(input, sessionId, pw, br, ois);
                     break;
-                case 5:
+                case 4:
                     return;
                 default:
                     System.out.println("올바른 값 입력");

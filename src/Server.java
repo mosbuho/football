@@ -55,9 +55,6 @@ public class Server {
                     case "getMyClubInfo":
                         GamerManager.getMyClubInfo(br, pw, oos);
                         break;
-                    case "dropPlayer":
-                        GamerManager.dropPlayer(br, pw);
-                        break;
                     case "sellPlayer":
                         GamerManager.sellPlayer(br, pw);
                         break;

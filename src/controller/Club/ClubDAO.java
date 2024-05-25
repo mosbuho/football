@@ -15,10 +15,10 @@ import model.Club;
 public class ClubDAO {
     public static ArrayList<Club> getClubList() {
         ArrayList<Club> clubList = new ArrayList<>();
-        try (Connection con = connectDB.getConnection();
-                PreparedStatement pstmt = con
-                        .prepareStatement("SELECT * FROM CLUB C LEFT JOIN PLAYER P ON C.C_NO = P.C_NO");
-                ResultSet rs = pstmt.executeQuery();) {
+        try (Connection con = connectDB.getConnection()) {
+            PreparedStatement pstmt = con
+                    .prepareStatement("SELECT * FROM CLUB C LEFT JOIN PLAYER P ON C.C_NO = P.C_NO");
+            ResultSet rs = pstmt.executeQuery();
             Map<Integer, Club> clubMap = new HashMap<>();
             Club club = null;
             int cNo = 0;
