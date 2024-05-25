@@ -1,5 +1,6 @@
 package controller.Club;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,10 +44,10 @@ public class ClubDAO {
 
     public static int createClub(String cName) {
         int result = 0;
-        try (Connection con = connectDB.getConnection();
-                PreparedStatement pstmt = con.prepareStatement("INSERT INTO CLUB(C_NAME) VALUES(?)")) {
-            pstmt.setString(1, cName);
-            result = pstmt.executeUpdate();
+        try (Connection con = connectDB.getConnection()) {
+            CallableStatement cstmt = con.prepareCall("{CALL INSERTCLUB(?)}");
+            cstmt.setString(1, cName);
+            result = cstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -55,10 +56,10 @@ public class ClubDAO {
 
     public static int deleteClub(int cNo) {
         int result = 0;
-        try (Connection con = connectDB.getConnection();
-                PreparedStatement pstmt = con.prepareStatement("DELETE FROM CLUB WHERE C_NO = ?")) {
-            pstmt.setInt(1, cNo);
-            result = pstmt.executeUpdate();
+        try (Connection con = connectDB.getConnection()) {
+            CallableStatement cstmt = con.prepareCall("{CALL DELETECLUB(?)}");
+            cstmt.setInt(1, cNo);
+            result = cstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -67,11 +68,11 @@ public class ClubDAO {
 
     public static int updateClub(int cNo, String cName) {
         int result = 0;
-        try (Connection con = connectDB.getConnection();
-                PreparedStatement pstmt = con.prepareStatement("UPDATE CLUB SET C_NAME = ? WHERE C_NO = ?")) {
-            pstmt.setString(1, cName);
-            pstmt.setInt(2, cNo);
-            result = pstmt.executeUpdate();
+        try (Connection con = connectDB.getConnection()) {
+            PreparedStatement cstmt = con.prepareStatement("{CALL UPDATECLUB(?, ?)}");
+            cstmt.setString(1, cName);
+            cstmt.setInt(2, cNo);
+            result = cstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
