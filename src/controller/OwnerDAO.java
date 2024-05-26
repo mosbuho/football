@@ -36,10 +36,12 @@ public class OwnerDAO {
         String sessionId = temp[1];
         int result = 0;
         try (Connection con = connectDB.getConnection()) {
-            CallableStatement cstmt = con.prepareCall("{CALL BUYPLAYER(?, ?)}");
+            CallableStatement cstmt = con.prepareCall("{CALL BUYPLAYER(?, ?, ?)}");
             cstmt.setString(1, sessionId);
             cstmt.setInt(2, pNo);
-            result = cstmt.executeUpdate();
+            cstmt.registerOutParameter(3, Types.INTEGER);
+            cstmt.executeUpdate();
+            result = cstmt.getInt(3);
         } catch (SQLException e) {
             e.printStackTrace();
         }
