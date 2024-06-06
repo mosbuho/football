@@ -27,7 +27,7 @@ public class GamePlayManager {
     private static final int MAX_GAME_PLAYER = 2;
     private static int round = 0;
     private static int inGameTurn = 0;
-    private static final int MAX_ROUNDS = 4;
+    private static final int MAX_ROUNDS = 2;
 
     public static void ready(BufferedReader br, PrintWriter pw, Socket cs) throws IOException {
         if (gamingUserSA.size() >= MAX_GAME_PLAYER) {
